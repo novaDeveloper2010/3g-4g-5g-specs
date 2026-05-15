@@ -674,8 +674,8 @@
     </div>
 
     <div class="section">
-      <h2>3. Verified 5G-only additions</h2>
-      <p>These rows were checked against the 3G and 4G source texts and only kept here when no 3G/4G counterpart was found.</p>
+      <h2>3. 5G commands</h2>
+      <p>These rows are 5G-specific or 5G-applicable entries from the archive.</p>
 
       <h3 style="margin:18px 0 8px; font-size:18px; color:#244c76;">5G-only profile / support extensions</h3>
       <table>
@@ -799,13 +799,18 @@
   const stats = document.getElementById('stats');
   let active = 'all';
 
+  function rowMatchesGeneration(row, filter) {
+    if (filter === 'all') return true;
+    const pillClass = `.pill-${filter.toLowerCase()}`;
+    return row.dataset.gen === filter || !!row.querySelector(pillClass);
+  }
+
   function applyFilters() {
     const q = search.value.trim().toLowerCase();
     let visible = 0;
     for (const row of rows) {
-      const gen = row.dataset.gen;
       const hay = row.dataset.search || '';
-      const okGen = active === 'all' || gen === active;
+      const okGen = rowMatchesGeneration(row, active);
       const okSearch = !q || hay.includes(q);
       const show = okGen && okSearch;
       row.classList.toggle('hidden', !show);
