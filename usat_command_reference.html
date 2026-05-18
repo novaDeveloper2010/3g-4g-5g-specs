@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>USAT / CAT Command Reference (3G / 4G / 5G era snapshots)</title>
+  <title>USAT / CAT Command Reference (Release 7 → 14 → 18)</title>
   <style>
     :root {
       --bg: #f6f7fb;
@@ -63,16 +63,16 @@
 <body>
   <div class="wrap">
     <div class="hero">
-      <h1>USAT / CAT Command Reference — 3G / 4G / 5G era snapshots</h1>
+      <h1>USAT / CAT Command Reference — Release 7 → 14 → 18</h1>
       <div class="subtitle">
-        Sources: ETSI TS 102 223 and 3GPP TS 31.111 releases 7, 14, and 18, archived in 3g/4g/5g folders as era snapshots rather than strict generation-pure documents. Shared event-download items such as MT call, Call connected, and Call disconnected are treated as inherited across releases, not 5G-only additions.
+        Sources: 3GPP TS 31.111 / ETSI TS 102 223 Release 7 (3G), Release 14 (4G, extends R7), and Release 18 (5G, extends R14). Each folder holds one distinct release; later releases inherit earlier commands. Shared event-download items such as MT call, Call connected, and Call disconnected are treated as inherited across releases.
       </div>
       <div class="toolbar">
-        <div class="tabs" role="tablist" aria-label="Release-era filter">
+        <div class="tabs" role="tablist" aria-label="Release stack filter">
           <button class="tab active" data-filter="all">All</button>
-          <button class="tab" data-filter="3G">3G era (R7)</button>
-          <button class="tab" data-filter="4G">4G era (R14)</button>
-          <button class="tab" data-filter="5G">5G era (R18)</button>
+          <button class="tab" data-filter="3G">3G release (R7)</button>
+          <button class="tab" data-filter="4G">4G release (R14)</button>
+          <button class="tab" data-filter="5G">5G release (R18)</button>
         </div>
         <div class="search"><input id="search" type="search" placeholder="Search command, clause, source, or description..." /></div>
         <div class="stats" id="stats">0 rows</div>
@@ -283,96 +283,96 @@
       <td><span class="pill pill-4g">4G</span></td>
       <td>ETSI TS 102 223 V14.2.0</td>
       <td>Requests the terminal to launch its browser to a specified URL with bearer and gateway parameters.</td>
-    </tr><tr data-gen="3G" data-search="3g proactive set up menu set up menu 6.4.8 usat/cat 5g/TS_102_223_CAT_V18_2_0.pdf supplies the terminal with menu items to integrate with the main menu for user selection.">
+    </tr><tr data-gen="3G" data-search="3g proactive set up menu set up menu 6.4.8 usat/cat 3g/TS_102_223_CAT_V7_17_0.pdf supplies the terminal with menu items to integrate with the main menu for user selection.">
       <td><strong>Set Up Menu</strong></td>
       <td>SET UP MENU</td>
       <td>6.4.8</td>
       <td><span class="pill pill-3g">3G</span></td>
-      <td>3G / legacy</td>
+      <td>3G Release 7</td>
       <td>Supplies the terminal with menu items to integrate with the main menu for user selection.</td>
-    </tr><tr data-gen="3G" data-search="3g proactive select item select item 6.4.9 usat/cat 5g/TS_102_223_CAT_V18_2_0.pdf presents a list of items to the user and returns the user&#x27;s selection to the uicc.">
+    </tr><tr data-gen="3G" data-search="3g proactive select item select item 6.4.9 usat/cat 3g/TS_102_223_CAT_V7_17_0.pdf presents a list of items to the user and returns the user&#x27;s selection to the uicc.">
       <td><strong>Select Item</strong></td>
       <td>SELECT ITEM</td>
       <td>6.4.9</td>
       <td><span class="pill pill-3g">3G</span></td>
-      <td>3G / legacy</td>
+      <td>3G Release 7</td>
       <td>Presents a list of items to the user and returns the user&#x27;s selection to the UICC.</td>
-    </tr><tr data-gen="3G" data-search="3g messaging send short message send short message 6.4.10 usat/cat 5g/TS_102_223_CAT_V18_2_0.pdf requests the terminal to send an sms to the network on behalf of the uicc.">
+    </tr><tr data-gen="3G" data-search="3g messaging send short message send short message 6.4.10 usat/cat 3g/TS_102_223_CAT_V7_17_0.pdf requests the terminal to send an sms to the network on behalf of the uicc.">
       <td><strong>Send Short Message</strong></td>
       <td>SEND SHORT MESSAGE</td>
       <td>6.4.10</td>
       <td><span class="pill pill-3g">3G</span></td>
-      <td>3G / legacy</td>
+      <td>3G Release 7</td>
       <td>Requests the terminal to send an SMS to the network on behalf of the UICC.</td>
-    </tr><tr data-gen="3G" data-search="3g messaging send ss send ss 6.4.11 usat/cat 5g/TS_102_223_CAT_V18_2_0.pdf sends a supplementary service control string over the network.">
+    </tr><tr data-gen="3G" data-search="3g messaging send ss send ss 6.4.11 usat/cat 3g/TS_102_223_CAT_V7_17_0.pdf sends a supplementary service control string over the network.">
       <td><strong>Send SS</strong></td>
       <td>SEND SS</td>
       <td>6.4.11</td>
       <td><span class="pill pill-3g">3G</span></td>
-      <td>3G / legacy</td>
+      <td>3G Release 7</td>
       <td>Sends a supplementary service control string over the network.</td>
-    </tr><tr data-gen="3G" data-search="3g messaging send ussd send ussd 6.4.12 usat/cat 5g/TS_102_223_CAT_V18_2_0.pdf sends a ussd string to the network and returns the response to the uicc.">
+    </tr><tr data-gen="3G" data-search="3g messaging send ussd send ussd 6.4.12 usat/cat 3g/TS_102_223_CAT_V7_17_0.pdf sends a ussd string to the network and returns the response to the uicc.">
       <td><strong>Send USSD</strong></td>
       <td>SEND USSD</td>
       <td>6.4.12</td>
       <td><span class="pill pill-3g">3G</span></td>
-      <td>3G / legacy</td>
+      <td>3G Release 7</td>
       <td>Sends a USSD string to the network and returns the response to the UICC.</td>
-    </tr><tr data-gen="3G" data-search="3g call control set up call set up call 6.4.13 usat/cat 5g/TS_102_223_CAT_V18_2_0.pdf requests the terminal to set up a voice or data call to a specified number.">
+    </tr><tr data-gen="3G" data-search="3g call control set up call set up call 6.4.13 usat/cat 3g/TS_102_223_CAT_V7_17_0.pdf requests the terminal to set up a voice or data call to a specified number.">
       <td><strong>Set Up Call</strong></td>
       <td>SET UP CALL</td>
       <td>6.4.13</td>
       <td><span class="pill pill-3g">3G</span></td>
-      <td>3G / legacy</td>
+      <td>3G Release 7</td>
       <td>Requests the terminal to set up a voice or data call to a specified number.</td>
-    </tr><tr data-gen="4G" data-search="4g information provide local information provide local information 6.4.15 usat/cat 5g/TS_102_223_CAT_V18_2_0.pdf returns local information such as location, imei, measurement data, time/date, access technology, or geographical location.">
+    </tr><tr data-gen="4G" data-search="4g information provide local information provide local information 6.4.15 usat/cat 4g/TS_102_223_CAT_V14_2_0.pdf returns local information such as location, imei, measurement data, time/date, access technology, or geographical location.">
       <td><strong>Provide Local Information</strong></td>
       <td>PROVIDE LOCAL INFORMATION</td>
       <td>6.4.15</td>
       <td><span class="pill pill-4g">4G</span></td>
-      <td>4G</td>
+      <td>4G Release 14</td>
       <td>Returns local information such as location, IMEI, measurement data, time/date, access technology, or geographical location.</td>
-    </tr><tr data-gen="3G" data-search="3g events set up event list set up event list 6.4.16 usat/cat 5g/TS_102_223_CAT_V18_2_0.pdf supplies the terminal with an event list including release 18 network and ims-related events.">
+    </tr><tr data-gen="3G" data-search="3g events set up event list set up event list 6.4.16 usat/cat 3g/TS_102_223_CAT_V7_17_0.pdf supplies the terminal with an event list including release 18 network and ims-related events.">
       <td><strong>Set Up Event List</strong></td>
       <td>SET UP EVENT LIST</td>
       <td>6.4.16</td>
       <td><span class="pill pill-3g">3G</span></td>
-      <td>3G / legacy</td>
+      <td>3G Release 7</td>
       <td>Supplies the terminal with an event list including Release 18 network and IMS-related events.</td>
-    </tr><tr data-gen="3G" data-search="3g card reader perform card apdu perform card apdu 6.4.17 cat 5g/TS_102_223_CAT_V18_2_0.pdf sends a c-apdu to an additional card reader and returns the r-apdu to the uicc.">
+    </tr><tr data-gen="3G" data-search="3g card reader perform card apdu perform card apdu 6.4.17 cat 3g/TS_102_223_CAT_V7_17_0.pdf sends a c-apdu to an additional card reader and returns the r-apdu to the uicc.">
       <td><strong>Perform Card APDU</strong></td>
       <td>PERFORM CARD APDU</td>
       <td>6.4.17</td>
       <td><span class="pill pill-3g">3G</span></td>
-      <td>3G / legacy</td>
+      <td>3G Release 7</td>
       <td>Sends a C-APDU to an additional card reader and returns the R-APDU to the UICC.</td>
-    </tr><tr data-gen="3G" data-search="3g timers timer management timer management 6.4.21 usat/cat 5g/TS_102_223_CAT_V18_2_0.pdf starts, stops, or queries a terminal timer on behalf of the uicc.">
+    </tr><tr data-gen="3G" data-search="3g timers timer management timer management 6.4.21 usat/cat 3g/TS_102_223_CAT_V7_17_0.pdf starts, stops, or queries a terminal timer on behalf of the uicc.">
       <td><strong>Timer Management</strong></td>
       <td>TIMER MANAGEMENT</td>
       <td>6.4.21</td>
       <td><span class="pill pill-3g">3G</span></td>
-      <td>3G / legacy</td>
+      <td>3G Release 7</td>
       <td>Starts, stops, or queries a terminal timer on behalf of the UICC.</td>
-    </tr><tr data-gen="3G" data-search="3g idle mode set up idle mode text set up idle mode text 6.4.22 usat/cat 5g/TS_102_223_CAT_V18_2_0.pdf supplies a text string to be displayed by the terminal in idle mode.">
+    </tr><tr data-gen="3G" data-search="3g idle mode set up idle mode text set up idle mode text 6.4.22 usat/cat 3g/TS_102_223_CAT_V7_17_0.pdf supplies a text string to be displayed by the terminal in idle mode.">
       <td><strong>Set Up Idle Mode Text</strong></td>
       <td>SET UP IDLE MODE TEXT</td>
       <td>6.4.22</td>
       <td><span class="pill pill-3g">3G</span></td>
-      <td>3G / legacy</td>
+      <td>3G Release 7</td>
       <td>Supplies a text string to be displayed by the terminal in idle mode.</td>
-    </tr><tr data-gen="4G" data-search="4g modem run at command run at command 6.4.23 cat 5g/TS_102_223_CAT_V18_2_0.pdf requests the terminal to execute an at command and return the response to the uicc.">
+    </tr><tr data-gen="4G" data-search="4g modem run at command run at command 6.4.23 cat 4g/TS_102_223_CAT_V14_2_0.pdf requests the terminal to execute an at command and return the response to the uicc.">
       <td><strong>Run AT Command</strong></td>
       <td>RUN AT COMMAND</td>
       <td>6.4.23</td>
       <td><span class="pill pill-4g">4G</span></td>
-      <td>4G</td>
+      <td>4G Release 14</td>
       <td>Requests the terminal to execute an AT command and return the response to the UICC.</td>
-    </tr><tr data-gen="3G" data-search="3g browser launch browser launch browser 6.4.26 usat/cat 5g/TS_102_223_CAT_V18_2_0.pdf requests the terminal to launch a browser to a url, with optional bearer and gateway parameters.">
+    </tr><tr data-gen="3G" data-search="3g browser launch browser launch browser 6.4.26 usat/cat 3g/TS_102_223_CAT_V7_17_0.pdf requests the terminal to launch a browser to a url, with optional bearer and gateway parameters.">
       <td><strong>Launch Browser</strong></td>
       <td>LAUNCH BROWSER</td>
       <td>6.4.26</td>
       <td><span class="pill pill-3g">3G</span></td>
-      <td>3G / legacy</td>
+      <td>3G Release 7</td>
       <td>Requests the terminal to launch a browser to a URL, with optional bearer and gateway parameters.</td>
     </tr>
         </tbody>
@@ -784,11 +784,11 @@
         <div>3g/TS_102_223_CAT_V7_17_0.pdf</div><div>3g/TS_131_111_USAT_V7_17_0.pdf</div><div>4g/TS_102_223_CAT_V14_2_0.pdf</div><div>4g/TS_131_111_USAT_V14_8_0.pdf</div><div>5g/TS_102_223_CAT_V18_2_0.pdf</div><div>5g/TS_131_111_USAT_V18_9_0.pdf</div>
       </div>
       <div class="legend">
-        <span>3G = Release 7 era</span>
-        <span>4G = Release 14 era</span>
-        <span>5G = Release 18 era</span>
+        <span>3G = Release 7 baseline</span>
+        <span>4G = Release 14 extends R7</span>
+        <span>5G = Release 18 extends R14</span>
       </div>
-      <div class="note">Cleaned reference copy: the 3g/4g/5g folders are era buckets, and shared/inherited items are normalized across releases while 5G-specific items remain isolated.</div>
+      <div class="note">Each folder is one 3GPP release; later releases inherit earlier commands, and 5G-specific items remain isolated.</div>
     </div>
   </div>
 
