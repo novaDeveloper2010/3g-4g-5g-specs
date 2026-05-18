@@ -802,7 +802,8 @@
   function rowMatchesGeneration(row, filter) {
     if (filter === 'all') return true;
     const pillClass = `.pill-${filter.toLowerCase()}`;
-    return row.dataset.gen === filter || !!row.querySelector(pillClass);
+    const pills = row.querySelectorAll('.pill');
+    return row.dataset.gen === filter && pills.length === 1 && !!row.querySelector(pillClass);
   }
 
   function applyFilters() {
