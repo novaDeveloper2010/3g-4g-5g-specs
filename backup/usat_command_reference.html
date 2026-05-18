@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>USAT Simulator — 3G / 4G / 5G Command Reference</title>
+  <title>USAT / CAT Command Reference (3G / 4G / 5G era snapshots)</title>
   <style>
     :root {
       --bg: #f6f7fb;
@@ -63,16 +63,16 @@
 <body>
   <div class="wrap">
     <div class="hero">
-      <h1>USAT Simulator — 3G / 4G / 5G Command Reference</h1>
+      <h1>USAT / CAT Command Reference — 3G / 4G / 5G era snapshots</h1>
       <div class="subtitle">
-        Sources: 3G Release 7, 4G Release 14, and 5G Release 18 command references extracted from the six PDFs in your project folders.
+        Sources: ETSI TS 102 223 and 3GPP TS 31.111 releases 7, 14, and 18, archived in 3g/4g/5g folders as era snapshots rather than strict generation-pure documents. Shared event-download items such as MT call, Call connected, and Call disconnected are treated as inherited across releases, not 5G-only additions.
       </div>
       <div class="toolbar">
-        <div class="tabs" role="tablist" aria-label="Generation filter">
+        <div class="tabs" role="tablist" aria-label="Release-era filter">
           <button class="tab active" data-filter="all">All</button>
-          <button class="tab" data-filter="3G">3G only</button>
-          <button class="tab" data-filter="4G">4G only</button>
-          <button class="tab" data-filter="5G">5G only</button>
+          <button class="tab" data-filter="3G">3G era (R7)</button>
+          <button class="tab" data-filter="4G">4G era (R14)</button>
+          <button class="tab" data-filter="5G">5G era (R18)</button>
         </div>
         <div class="search"><input id="search" type="search" placeholder="Search command, clause, source, or description..." /></div>
         <div class="stats" id="stats">0 rows</div>
@@ -385,11 +385,11 @@
         <div>3g/TS_102_223_CAT_V7_17_0.pdf</div><div>3g/TS_131_111_USAT_V7_17_0.pdf</div><div>4g/TS_102_223_CAT_V14_2_0.pdf</div><div>4g/TS_131_111_USAT_V14_8_0.pdf</div><div>5g/TS_102_223_CAT_V18_2_0.pdf</div><div>5g/TS_131_111_USAT_V18_9_0.pdf</div>
       </div>
       <div class="legend">
-        <span>3G = Release 7</span>
-        <span>4G = Release 14</span>
-        <span>5G = Release 18</span>
+        <span>3G = Release 7 era</span>
+        <span>4G = Release 14 era</span>
+        <span>5G = Release 18 era</span>
       </div>
-      <div class="note">Built to look like a quick simulator reference page: tab filters, search, and a dense command table.</div>
+      <div class="note">Cleaned reference copy: the 3g/4g/5g folders are era buckets, and shared/inherited items are normalized across releases while 5G-specific items remain isolated.</div>
     </div>
   </div>
 
