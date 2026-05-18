@@ -1,833 +1,501 @@
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>USAT / CAT Command Reference (Release 7 → 14 → 18)</title>
-  <style>
-    :root {
-      --bg: #f6f7fb;
-      --panel: #ffffff;
-      --text: #1f2a37;
-      --muted: #6b7280;
-      --line: #d8dee9;
-      --accent: #2457a6;
-      --accent2: #1f6feb;
-      --chip3: #d9f7e5;
-      --chip4: #d9efff;
-      --chip5: #efe0ff;
-      --shadow: 0 10px 30px rgba(16, 24, 40, 0.06);
-    }
-    * { box-sizing: border-box; }
-    body { margin: 0; font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: var(--bg); color: var(--text); }
-    .wrap { max-width: 1300px; margin: 0 auto; padding: 32px 24px 48px; }
-    .hero { background: var(--panel); border: 1px solid var(--line); border-radius: 18px; box-shadow: var(--shadow); padding: 24px 26px 18px; }
-    h1 { margin: 0 0 8px; font-size: clamp(28px, 3vw, 42px); line-height: 1.1; color: #23314a; }
-    .subtitle { color: var(--muted); font-size: 15px; line-height: 1.45; }
-    .toolbar { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; margin-top: 18px; padding-top: 18px; border-top: 1px solid var(--line); }
-    .tabs { display: inline-flex; gap: 8px; background: #f1f5f9; padding: 6px; border-radius: 12px; }
-    .tab { border: 0; background: transparent; padding: 10px 16px; border-radius: 10px; font-weight: 700; color: #48566c; cursor: pointer; }
-    .tab.active { background: var(--accent); color: #fff; box-shadow: 0 4px 16px rgba(36, 87, 166, 0.25); }
-    .search { flex: 1 1 320px; min-width: 240px; }
-    .search input { width: 100%; border: 1px solid var(--line); background: #fff; border-radius: 12px; padding: 12px 14px; font-size: 15px; outline: none; }
-    .stats { margin-left: auto; font-weight: 700; color: #40506a; white-space: nowrap; }
-    .section { margin-top: 22px; }
-    .section h2 { font-size: 24px; color: #244c76; margin: 18px 0 8px; }
-    .section p { margin: 0 0 14px; color: var(--muted); }
-    table { width: 100%; border-collapse: collapse; background: var(--panel); border: 1px solid var(--line); border-radius: 16px; overflow: hidden; box-shadow: var(--shadow); }
-    thead th { background: #eef3f8; text-align: left; padding: 14px 12px; font-size: 14px; color: #334155; border-bottom: 1px solid var(--line); }
-    tbody td { padding: 14px 12px; vertical-align: top; border-bottom: 1px solid var(--line); font-size: 14px; line-height: 1.45; }
-    tbody tr:hover { background: #f9fbff; }
-    tbody tr.hidden { display: none; }
-    .pill { display: inline-flex; align-items: center; justify-content: center; min-width: 38px; padding: 4px 10px; border-radius: 999px; font-weight: 800; font-size: 12px; letter-spacing: 0.02em; }
-    .pill-3g { background: var(--chip3); color: #166534; }
-    .pill-4g { background: var(--chip4); color: #075985; }
-    .pill-5g { background: var(--chip5); color: #6b21a8; }
-    .source-list { margin-top: 18px; background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 16px 18px; box-shadow: var(--shadow); }
-    .source-list h3 { margin: 0 0 10px; font-size: 16px; color: #334155; }
-    .source-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 8px 18px; color: var(--muted); font-size: 14px; }
-    .note { margin-top: 12px; color: var(--muted); font-size: 13px; }
-    .legend { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
-    .legend span { font-size: 12px; color: #475569; background: #f8fafc; border: 1px solid var(--line); padding: 5px 9px; border-radius: 999px; }
-    @media (max-width: 900px) {
-      .stats { margin-left: 0; }
-      table, thead, tbody, th, td, tr { font-size: 13px; }
-      thead { display: none; }
-      table, tbody, tr, td { display: block; width: 100%; }
-      tbody tr { border-bottom: 1px solid var(--line); padding: 10px 0; }
-      tbody td { border: 0; padding: 6px 12px; }
-      tbody td::before { content: attr(data-label) ": "; font-weight: 700; color: #475569; }
-    }
-  </style>
-</head>
-<body>
-  <div class="wrap">
-    <div class="hero">
-      <h1>USAT / CAT Command Reference — Release 7 → 14 → 18</h1>
-      <div class="subtitle">
-        Sources: 3GPP TS 31.111 / ETSI TS 102 223 Release 7 (3G), Release 14 (4G, extends R7), and Release 18 (5G, extends R14). Each folder holds one distinct release; later releases inherit earlier commands. Shared event-download items such as MT call, Call connected, and Call disconnected are treated as inherited across releases.
-      </div>
-      <div class="toolbar">
-        <div class="tabs" role="tablist" aria-label="Release stack filter">
-          <button class="tab active" data-filter="all">All</button>
-          <button class="tab" data-filter="3G">3G release (R7)</button>
-          <button class="tab" data-filter="4G">4G release (R14)</button>
-          <button class="tab" data-filter="5G">5G release (R18)</button>
-        </div>
-        <div class="search"><input id="search" type="search" placeholder="Search command, clause, source, or description..." /></div>
-        <div class="stats" id="stats">0 rows</div>
-      </div>
-    </div>
-
-    <div class="section">
-      <h2>1. Proactive Commands</h2>
-      <p>Commands the UICC sends to the terminal. This page focuses on the rows most useful for a compact browser reference.</p>
-      <table>
-        <thead>
-          <tr>
-            <th>UI Checkbox</th>
-            <th>ETSI Command</th>
-            <th>Clause(s)</th>
-            <th>Applies</th>
-            <th>Source</th>
-            <th>Description</th>
-          </tr>
-        </thead>
-        <tbody id="rows">
-          <tr data-gen="3G" data-search="3g display &amp; ui display text display text 6.4.1 me 3gpp ts 31.111 r7 (usat) uicc requests the me to display a text string to the user, with optional priority and clear-after conditions.">
-      <td><strong>Display Text</strong></td>
-      <td>DISPLAY TEXT</td>
-      <td>6.4.1</td>
-      <td><span class="pill pill-3g">3G</span></td>
-      <td>3GPP TS 31.111 R7 (USAT)</td>
-      <td>UICC requests the ME to display a text string to the user, with optional priority and clear-after conditions.</td>
-    </tr><tr data-gen="3G" data-search="3g user input get inkey get inkey 6.4.2 me 3gpp ts 31.111 r7 (usat) uicc requests a single character (digit, character or yes/no) keystroke from the user.">
-      <td><strong>Get Inkey</strong></td>
-      <td>GET INKEY</td>
-      <td>6.4.2</td>
-      <td><span class="pill pill-3g">3G</span></td>
-      <td>3GPP TS 31.111 R7 (USAT)</td>
-      <td>UICC requests a single character (digit, character or Yes/No) keystroke from the user.</td>
-    </tr><tr data-gen="3G" data-search="3g user input get input get input 6.4.3 me 3gpp ts 31.111 r7 (usat) uicc requests the me to prompt the user for a string of characters, with min/max length and echo/hide options.">
-      <td><strong>Get Input</strong></td>
-      <td>GET INPUT</td>
-      <td>6.4.3</td>
-      <td><span class="pill pill-3g">3G</span></td>
-      <td>3GPP TS 31.111 R7 (USAT)</td>
-      <td>UICC requests the ME to prompt the user for a string of characters, with min/max length and echo/hide options.</td>
-    </tr><tr data-gen="3G" data-search="3g display &amp; ui play tone play tone 6.4.5 me 3gpp ts 31.111 r7 (usat) uicc instructs the me to play an audible tone for a specified duration.">
-      <td><strong>Play Tone</strong></td>
-      <td>PLAY TONE</td>
-      <td>6.4.5</td>
-      <td><span class="pill pill-3g">3G</span></td>
-      <td>3GPP TS 31.111 R7 (USAT)</td>
-      <td>UICC instructs the ME to play an audible tone for a specified duration.</td>
-    </tr><tr data-gen="3G" data-search="3g uicc management refresh refresh 6.4.7 me / uicc 3gpp ts 31.111 r7 (usat) uicc notifies the me that file contents or configuration changed; triggers cache invalidation, reset or full re-initialisation.">
-      <td><strong>Refresh</strong></td>
-      <td>REFRESH</td>
-      <td>6.4.7</td>
-      <td><span class="pill pill-3g">3G</span></td>
-      <td>3GPP TS 31.111 R7 (USAT)</td>
-      <td>UICC notifies the ME that file contents or configuration changed; triggers cache invalidation, reset or full re-initialisation.</td>
-    </tr><tr data-gen="3G" data-search="3g menus set up menu set up menu 6.4.8 me 3gpp ts 31.111 r7 (usat) uicc supplies the me with the main sim toolkit menu of items to present to the user.">
-      <td><strong>Set Up Menu</strong></td>
-      <td>SET UP MENU</td>
-      <td>6.4.8</td>
-      <td><span class="pill pill-3g">3G</span></td>
-      <td>3GPP TS 31.111 R7 (USAT)</td>
-      <td>UICC supplies the ME with the main SIM Toolkit menu of items to present to the user.</td>
-    </tr><tr data-gen="3G" data-search="3g menus select item select item 6.4.9 me 3gpp ts 31.111 r7 (usat) uicc asks the me to present a list of items and return the user&#x27;s selection.">
-      <td><strong>Select Item</strong></td>
-      <td>SELECT ITEM</td>
-      <td>6.4.9</td>
-      <td><span class="pill pill-3g">3G</span></td>
-      <td>3GPP TS 31.111 R7 (USAT)</td>
-      <td>UICC asks the ME to present a list of items and return the user&#x27;s selection.</td>
-    </tr><tr data-gen="3G" data-search="3g messaging send short message send short message 6.4.10 me / network 3gpp ts 31.111 r7 (usat) uicc instructs the me to send an sms-submit or sms-command to the network on its behalf.">
-      <td><strong>Send Short Message</strong></td>
-      <td>SEND SHORT MESSAGE</td>
-      <td>6.4.10</td>
-      <td><span class="pill pill-3g">3G</span></td>
-      <td>3GPP TS 31.111 R7 (USAT)</td>
-      <td>UICC instructs the ME to send an SMS-SUBMIT or SMS-COMMAND to the network on its behalf.</td>
-    </tr><tr data-gen="3G" data-search="3g supplementary services send ss send ss 6.4.11 me / network 3gpp ts 31.111 r7 (usat) uicc requests the me to send a supplementary service control string over the network.">
-      <td><strong>Send SS</strong></td>
-      <td>SEND SS</td>
-      <td>6.4.11</td>
-      <td><span class="pill pill-3g">3G</span></td>
-      <td>3GPP TS 31.111 R7 (USAT)</td>
-      <td>UICC requests the ME to send a supplementary service control string over the network.</td>
-    </tr><tr data-gen="3G" data-search="3g supplementary services send ussd send ussd 6.4.12 me / network 3gpp ts 31.111 r7 (usat) uicc instructs the me to send a ussd string to the network and return the response.">
-      <td><strong>Send USSD</strong></td>
-      <td>SEND USSD</td>
-      <td>6.4.12</td>
-      <td><span class="pill pill-3g">3G</span></td>
-      <td>3GPP TS 31.111 R7 (USAT)</td>
-      <td>UICC instructs the ME to send a USSD string to the network and return the response.</td>
-    </tr><tr data-gen="3G" data-search="3g call control set up call set up call 6.4.13 me / network 3gpp ts 31.111 r7 (usat) uicc requests the me to originate a call, optionally with redial and control parameters.">
-      <td><strong>Set Up Call</strong></td>
-      <td>SET UP CALL</td>
-      <td>6.4.13</td>
-      <td><span class="pill pill-3g">3G</span></td>
-      <td>3GPP TS 31.111 R7 (USAT)</td>
-      <td>UICC requests the ME to originate a call, optionally with redial and control parameters.</td>
-    </tr><tr data-gen="3G" data-search="3g events &amp; idle set up event list set up event list 6.4.16 me etsi ts 102 223 r7 (cat) uicc supplies the me with an event list so it can be notified about selected network and device events.">
-      <td><strong>Set Up Event List</strong></td>
-      <td>SET UP EVENT LIST</td>
-      <td>6.4.16</td>
-      <td><span class="pill pill-3g">3G</span></td>
-      <td>ETSI TS 102 223 R7 (CAT)</td>
-      <td>UICC supplies the ME with an event list so it can be notified about selected network and device events.</td>
-    </tr><tr data-gen="3G" data-search="3g timers timer management timer management 6.4.21 me etsi ts 102 223 r7 (cat) starts, stops, or queries a terminal timer on behalf of the uicc.">
-      <td><strong>Timer Management</strong></td>
-      <td>TIMER MANAGEMENT</td>
-      <td>6.4.21</td>
-      <td><span class="pill pill-3g">3G</span></td>
-      <td>ETSI TS 102 223 R7 (CAT)</td>
-      <td>Starts, stops, or queries a terminal timer on behalf of the UICC.</td>
-    </tr><tr data-gen="3G" data-search="3g idle mode set up idle mode text set up idle mode text 6.4.22 me etsi ts 102 223 r7 (cat) supplies a text string to be displayed by the terminal in idle mode.">
-      <td><strong>Set Up Idle Mode Text</strong></td>
-      <td>SET UP IDLE MODE TEXT</td>
-      <td>6.4.22</td>
-      <td><span class="pill pill-3g">3G</span></td>
-      <td>ETSI TS 102 223 R7 (CAT)</td>
-      <td>Supplies a text string to be displayed by the terminal in idle mode.</td>
-    </tr><tr data-gen="3G" data-search="3g data &amp; browsing launch browser launch browser 6.4.26 me etsi ts 102 223 r7 (cat) uicc requests the me to launch its browser and open a specified url with optional bearer parameters.">
-      <td><strong>Launch Browser</strong></td>
-      <td>LAUNCH BROWSER</td>
-      <td>6.4.26</td>
-      <td><span class="pill pill-3g">3G</span></td>
-      <td>ETSI TS 102 223 R7 (CAT)</td>
-      <td>UICC requests the ME to launch its browser and open a specified URL with optional bearer parameters.</td>
-    </tr><tr data-gen="4G" data-search="4g proactive send short message send short message 6.4.10 usat/cat 3gpp ts 31.111 v14.8.0 uicc instructs the me to send an sms to the network on behalf of the uicc.">
-      <td><strong>Send Short Message</strong></td>
-      <td>SEND SHORT MESSAGE</td>
-      <td>6.4.10</td>
-      <td><span class="pill pill-4g">4G</span></td>
-      <td>3GPP TS 31.111 V14.8.0</td>
-      <td>UICC instructs the ME to send an SMS to the network on behalf of the UICC.</td>
-    </tr><tr data-gen="4G" data-search="4g proactive send ss send ss 6.4.11 usat/cat 3gpp ts 31.111 v14.8.0 uicc requests the me to send a supplementary service control string over the network.">
-      <td><strong>Send SS</strong></td>
-      <td>SEND SS</td>
-      <td>6.4.11</td>
-      <td><span class="pill pill-4g">4G</span></td>
-      <td>3GPP TS 31.111 V14.8.0</td>
-      <td>UICC requests the ME to send a supplementary service control string over the network.</td>
-    </tr><tr data-gen="4G" data-search="4g proactive send ussd send ussd 6.4.12 usat/cat 3gpp ts 31.111 v14.8.0 uicc requests the me to send a ussd string and return the network response.">
-      <td><strong>Send USSD</strong></td>
-      <td>SEND USSD</td>
-      <td>6.4.12</td>
-      <td><span class="pill pill-4g">4G</span></td>
-      <td>3GPP TS 31.111 V14.8.0</td>
-      <td>UICC requests the ME to send a USSD string and return the network response.</td>
-    </tr><tr data-gen="4G" data-search="4g proactive set up call set up call 6.4.13 usat/cat 3gpp ts 31.111 v14.8.0 uicc instructs the me to originate a voice/data call with optional confirmation and call parameters.">
-      <td><strong>Set Up Call</strong></td>
-      <td>SET UP CALL</td>
-      <td>6.4.13</td>
-      <td><span class="pill pill-4g">4G</span></td>
-      <td>3GPP TS 31.111 V14.8.0</td>
-      <td>UICC instructs the ME to originate a voice/data call with optional confirmation and call parameters.</td>
-    </tr><tr data-gen="4G" data-search="4g proactive polling off polling off 6.4.14 usat/cat 3gpp ts 31.111 v14.8.0 requests the me to stop proactive status polling until further notice.">
-      <td><strong>Polling Off</strong></td>
-      <td>POLLING OFF</td>
-      <td>6.4.14</td>
-      <td><span class="pill pill-4g">4G</span></td>
-      <td>3GPP TS 31.111 V14.8.0</td>
-      <td>Requests the ME to stop proactive status polling until further notice.</td>
-    </tr><tr data-gen="4G" data-search="4g information provide local information provide local information 6.4.15 usat/cat 3gpp ts 31.111 v14.8.0 returns local information such as location, imei, network measurements, time/date, access technology, and rel-14 wlan/e-utran timing data.">
-      <td><strong>Provide Local Information</strong></td>
-      <td>PROVIDE LOCAL INFORMATION</td>
-      <td>6.4.15</td>
-      <td><span class="pill pill-4g">4G</span></td>
-      <td>3GPP TS 31.111 V14.8.0</td>
-      <td>Returns local information such as location, IMEI, network measurements, time/date, access technology, and Rel-14 WLAN/E-UTRAN timing data.</td>
-    </tr><tr data-gen="4G" data-search="4g events set up event list set up event list 6.4.16 usat/cat etsi ts 102 223 v14.2.0 supplies the terminal with an event list; release 14 adds newer network and ims-related event support.">
-      <td><strong>Set Up Event List</strong></td>
-      <td>SET UP EVENT LIST</td>
-      <td>6.4.16</td>
-      <td><span class="pill pill-4g">4G</span></td>
-      <td>ETSI TS 102 223 V14.2.0</td>
-      <td>Supplies the terminal with an event list; Release 14 adds newer network and IMS-related event support.</td>
-    </tr><tr data-gen="4G" data-search="4g timers timer management timer management 6.4.21 usat/cat etsi ts 102 223 v14.2.0 starts, stops, or queries a terminal timer on behalf of the uicc.">
-      <td><strong>Timer Management</strong></td>
-      <td>TIMER MANAGEMENT</td>
-      <td>6.4.21</td>
-      <td><span class="pill pill-4g">4G</span></td>
-      <td>ETSI TS 102 223 V14.2.0</td>
-      <td>Starts, stops, or queries a terminal timer on behalf of the UICC.</td>
-    </tr><tr data-gen="4G" data-search="4g idle mode set up idle mode text set up idle mode text 6.4.22 usat/cat etsi ts 102 223 v14.2.0 supplies a text string to be displayed by the terminal in idle mode.">
-      <td><strong>Set Up Idle Mode Text</strong></td>
-      <td>SET UP IDLE MODE TEXT</td>
-      <td>6.4.22</td>
-      <td><span class="pill pill-4g">4G</span></td>
-      <td>ETSI TS 102 223 V14.2.0</td>
-      <td>Supplies a text string to be displayed by the terminal in idle mode.</td>
-    </tr><tr data-gen="4G" data-search="4g modem run at command run at command 6.4.23 cat etsi ts 102 223 v14.2.0 requests the terminal to execute an at command and return the response to the uicc.">
-      <td><strong>Run AT Command</strong></td>
-      <td>RUN AT COMMAND</td>
-      <td>6.4.23</td>
-      <td><span class="pill pill-4g">4G</span></td>
-      <td>ETSI TS 102 223 V14.2.0</td>
-      <td>Requests the terminal to execute an AT command and return the response to the UICC.</td>
-    </tr><tr data-gen="4G" data-search="4g telephony send dtmf send dtmf 6.4.24 cat etsi ts 102 223 v14.2.0 asks the terminal to transmit a dtmf digit string during an active call.">
-      <td><strong>Send DTMF</strong></td>
-      <td>SEND DTMF</td>
-      <td>6.4.24</td>
-      <td><span class="pill pill-4g">4G</span></td>
-      <td>ETSI TS 102 223 V14.2.0</td>
-      <td>Asks the terminal to transmit a DTMF digit string during an active call.</td>
-    </tr><tr data-gen="4G" data-search="4g browser launch browser launch browser 6.4.26 usat/cat etsi ts 102 223 v14.2.0 requests the terminal to launch its browser to a specified url with bearer and gateway parameters.">
-      <td><strong>Launch Browser</strong></td>
-      <td>LAUNCH BROWSER</td>
-      <td>6.4.26</td>
-      <td><span class="pill pill-4g">4G</span></td>
-      <td>ETSI TS 102 223 V14.2.0</td>
-      <td>Requests the terminal to launch its browser to a specified URL with bearer and gateway parameters.</td>
-    </tr><tr data-gen="3G" data-search="3g proactive set up menu set up menu 6.4.8 usat/cat 3g/TS_102_223_CAT_V7_17_0.pdf supplies the terminal with menu items to integrate with the main menu for user selection.">
-      <td><strong>Set Up Menu</strong></td>
-      <td>SET UP MENU</td>
-      <td>6.4.8</td>
-      <td><span class="pill pill-3g">3G</span></td>
-      <td>3G Release 7</td>
-      <td>Supplies the terminal with menu items to integrate with the main menu for user selection.</td>
-    </tr><tr data-gen="3G" data-search="3g proactive select item select item 6.4.9 usat/cat 3g/TS_102_223_CAT_V7_17_0.pdf presents a list of items to the user and returns the user&#x27;s selection to the uicc.">
-      <td><strong>Select Item</strong></td>
-      <td>SELECT ITEM</td>
-      <td>6.4.9</td>
-      <td><span class="pill pill-3g">3G</span></td>
-      <td>3G Release 7</td>
-      <td>Presents a list of items to the user and returns the user&#x27;s selection to the UICC.</td>
-    </tr><tr data-gen="3G" data-search="3g messaging send short message send short message 6.4.10 usat/cat 3g/TS_102_223_CAT_V7_17_0.pdf requests the terminal to send an sms to the network on behalf of the uicc.">
-      <td><strong>Send Short Message</strong></td>
-      <td>SEND SHORT MESSAGE</td>
-      <td>6.4.10</td>
-      <td><span class="pill pill-3g">3G</span></td>
-      <td>3G Release 7</td>
-      <td>Requests the terminal to send an SMS to the network on behalf of the UICC.</td>
-    </tr><tr data-gen="3G" data-search="3g messaging send ss send ss 6.4.11 usat/cat 3g/TS_102_223_CAT_V7_17_0.pdf sends a supplementary service control string over the network.">
-      <td><strong>Send SS</strong></td>
-      <td>SEND SS</td>
-      <td>6.4.11</td>
-      <td><span class="pill pill-3g">3G</span></td>
-      <td>3G Release 7</td>
-      <td>Sends a supplementary service control string over the network.</td>
-    </tr><tr data-gen="3G" data-search="3g messaging send ussd send ussd 6.4.12 usat/cat 3g/TS_102_223_CAT_V7_17_0.pdf sends a ussd string to the network and returns the response to the uicc.">
-      <td><strong>Send USSD</strong></td>
-      <td>SEND USSD</td>
-      <td>6.4.12</td>
-      <td><span class="pill pill-3g">3G</span></td>
-      <td>3G Release 7</td>
-      <td>Sends a USSD string to the network and returns the response to the UICC.</td>
-    </tr><tr data-gen="3G" data-search="3g call control set up call set up call 6.4.13 usat/cat 3g/TS_102_223_CAT_V7_17_0.pdf requests the terminal to set up a voice or data call to a specified number.">
-      <td><strong>Set Up Call</strong></td>
-      <td>SET UP CALL</td>
-      <td>6.4.13</td>
-      <td><span class="pill pill-3g">3G</span></td>
-      <td>3G Release 7</td>
-      <td>Requests the terminal to set up a voice or data call to a specified number.</td>
-    </tr><tr data-gen="4G" data-search="4g information provide local information provide local information 6.4.15 usat/cat 4g/TS_102_223_CAT_V14_2_0.pdf returns local information such as location, imei, measurement data, time/date, access technology, or geographical location.">
-      <td><strong>Provide Local Information</strong></td>
-      <td>PROVIDE LOCAL INFORMATION</td>
-      <td>6.4.15</td>
-      <td><span class="pill pill-4g">4G</span></td>
-      <td>4G Release 14</td>
-      <td>Returns local information such as location, IMEI, measurement data, time/date, access technology, or geographical location.</td>
-    </tr><tr data-gen="3G" data-search="3g events set up event list set up event list 6.4.16 usat/cat 3g/TS_102_223_CAT_V7_17_0.pdf supplies the terminal with an event list including release 18 network and ims-related events.">
-      <td><strong>Set Up Event List</strong></td>
-      <td>SET UP EVENT LIST</td>
-      <td>6.4.16</td>
-      <td><span class="pill pill-3g">3G</span></td>
-      <td>3G Release 7</td>
-      <td>Supplies the terminal with an event list including Release 18 network and IMS-related events.</td>
-    </tr><tr data-gen="3G" data-search="3g card reader perform card apdu perform card apdu 6.4.17 cat 3g/TS_102_223_CAT_V7_17_0.pdf sends a c-apdu to an additional card reader and returns the r-apdu to the uicc.">
-      <td><strong>Perform Card APDU</strong></td>
-      <td>PERFORM CARD APDU</td>
-      <td>6.4.17</td>
-      <td><span class="pill pill-3g">3G</span></td>
-      <td>3G Release 7</td>
-      <td>Sends a C-APDU to an additional card reader and returns the R-APDU to the UICC.</td>
-    </tr><tr data-gen="3G" data-search="3g timers timer management timer management 6.4.21 usat/cat 3g/TS_102_223_CAT_V7_17_0.pdf starts, stops, or queries a terminal timer on behalf of the uicc.">
-      <td><strong>Timer Management</strong></td>
-      <td>TIMER MANAGEMENT</td>
-      <td>6.4.21</td>
-      <td><span class="pill pill-3g">3G</span></td>
-      <td>3G Release 7</td>
-      <td>Starts, stops, or queries a terminal timer on behalf of the UICC.</td>
-    </tr><tr data-gen="3G" data-search="3g idle mode set up idle mode text set up idle mode text 6.4.22 usat/cat 3g/TS_102_223_CAT_V7_17_0.pdf supplies a text string to be displayed by the terminal in idle mode.">
-      <td><strong>Set Up Idle Mode Text</strong></td>
-      <td>SET UP IDLE MODE TEXT</td>
-      <td>6.4.22</td>
-      <td><span class="pill pill-3g">3G</span></td>
-      <td>3G Release 7</td>
-      <td>Supplies a text string to be displayed by the terminal in idle mode.</td>
-    </tr><tr data-gen="4G" data-search="4g modem run at command run at command 6.4.23 cat 4g/TS_102_223_CAT_V14_2_0.pdf requests the terminal to execute an at command and return the response to the uicc.">
-      <td><strong>Run AT Command</strong></td>
-      <td>RUN AT COMMAND</td>
-      <td>6.4.23</td>
-      <td><span class="pill pill-4g">4G</span></td>
-      <td>4G Release 14</td>
-      <td>Requests the terminal to execute an AT command and return the response to the UICC.</td>
-    </tr><tr data-gen="3G" data-search="3g browser launch browser launch browser 6.4.26 usat/cat 3g/TS_102_223_CAT_V7_17_0.pdf requests the terminal to launch a browser to a url, with optional bearer and gateway parameters.">
-      <td><strong>Launch Browser</strong></td>
-      <td>LAUNCH BROWSER</td>
-      <td>6.4.26</td>
-      <td><span class="pill pill-3g">3G</span></td>
-      <td>3G Release 7</td>
-      <td>Requests the terminal to launch a browser to a URL, with optional bearer and gateway parameters.</td>
-    </tr>
-        </tbody>
-      </table>
-    </div>
-
-
-
-    <div class="section">
-      <h2>2. Events (Event Download &amp; Envelopes)</h2>
-      <p>Terminal-to-UICC event download rows and related envelope-adjacent proactive commands that were missing from the first pass.</p>
-      <table>
-        <thead>
-          <tr>
-            <th>Event / Command</th>
-            <th>Clause Family</th>
-            <th>Applies</th>
-            <th>Source</th>
-            <th>Description</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr class="filterable-row" data-gen="3G" data-search="mt call event download envelope terminal to uicc 3g 4g 5g incoming call notification">
-            <td><strong>MT call</strong></td>
-            <td>Event download</td>
-            <td><span class="pill pill-3g">3G</span> <span class="pill pill-4g">4G</span> <span class="pill pill-5g">5G</span></td>
-            <td>TS 102 223 / TS 31.111 event download</td>
-            <td>Notifies the UICC of an incoming mobile-terminated call.</td>
-          </tr>
-          <tr class="filterable-row" data-gen="3G" data-search="call connected event download envelope terminal to uicc 3g 4g 5g call connected notification">
-            <td><strong>Call connected</strong></td>
-            <td>Event download</td>
-            <td><span class="pill pill-3g">3G</span> <span class="pill pill-4g">4G</span> <span class="pill pill-5g">5G</span></td>
-            <td>TS 102 223 / TS 31.111 event download</td>
-            <td>Reports that a monitored call has connected.</td>
-          </tr>
-          <tr class="filterable-row" data-gen="3G" data-search="call disconnected event download envelope terminal to uicc 3g 4g 5g call disconnected notification">
-            <td><strong>Call disconnected</strong></td>
-            <td>Event download</td>
-            <td><span class="pill pill-3g">3G</span> <span class="pill pill-4g">4G</span> <span class="pill pill-5g">5G</span></td>
-            <td>TS 102 223 / TS 31.111 event download</td>
-            <td>Reports that a monitored call has disconnected.</td>
-          </tr>
-          <tr class="filterable-row" data-gen="3G" data-search="location status event download 3g 4g 5g location update">
-            <td><strong>Location status</strong></td>
-            <td>Event download</td>
-            <td><span class="pill pill-3g">3G</span> <span class="pill pill-4g">4G</span> <span class="pill pill-5g">5G</span></td>
-            <td>TS 102 223 / TS 31.111 event download</td>
-            <td>Reports a change in location status to the UICC.</td>
-          </tr>
-          <tr class="filterable-row" data-gen="3G" data-search="user activity event download 3g 4g 5g terminal user activity">
-            <td><strong>User activity</strong></td>
-            <td>Event download</td>
-            <td><span class="pill pill-3g">3G</span> <span class="pill pill-4g">4G</span> <span class="pill pill-5g">5G</span></td>
-            <td>TS 102 223 / TS 31.111 event download</td>
-            <td>Notifies the UICC when user activity is detected.</td>
-          </tr>
-          <tr class="filterable-row" data-gen="3G" data-search="idle screen available event download 3g 4g 5g idle screen">
-            <td><strong>Idle screen available</strong></td>
-            <td>Event download</td>
-            <td><span class="pill pill-3g">3G</span> <span class="pill pill-4g">4G</span> <span class="pill pill-5g">5G</span></td>
-            <td>TS 102 223 / TS 31.111 event download</td>
-            <td>Indicates that the idle screen is available for applications.</td>
-          </tr>
-          <tr class="filterable-row" data-gen="3G" data-search="card reader status event download 3g 4g 5g card reader">
-            <td><strong>Card reader status</strong></td>
-            <td>Event download</td>
-            <td><span class="pill pill-3g">3G</span> <span class="pill pill-4g">4G</span> <span class="pill pill-5g">5G</span></td>
-            <td>TS 102 223 / TS 31.111 event download</td>
-            <td>Reports card reader status changes to the UICC.</td>
-          </tr>
-          <tr class="filterable-row" data-gen="3G" data-search="language selection event download 3g 4g 5g language change">
-            <td><strong>Language selection</strong></td>
-            <td>Event download</td>
-            <td><span class="pill pill-3g">3G</span> <span class="pill pill-4g">4G</span> <span class="pill pill-5g">5G</span></td>
-            <td>TS 102 223 / TS 31.111 event download</td>
-            <td>Notifies the UICC when the terminal language selection changes.</td>
-          </tr>
-          <tr class="filterable-row" data-gen="3G" data-search="browser termination event download 3g 4g 5g browser closed">
-            <td><strong>Browser termination</strong></td>
-            <td>Event download</td>
-            <td><span class="pill pill-3g">3G</span> <span class="pill pill-4g">4G</span> <span class="pill pill-5g">5G</span></td>
-            <td>TS 102 223 / TS 31.111 event download</td>
-            <td>Reports that the browser session has terminated.</td>
-          </tr>
-          <tr class="filterable-row" data-gen="3G" data-search="data available event download 3g 4g 5g channel data available">
-            <td><strong>Data available</strong></td>
-            <td>Event download</td>
-            <td><span class="pill pill-3g">3G</span> <span class="pill pill-4g">4G</span> <span class="pill pill-5g">5G</span></td>
-            <td>TS 102 223 / TS 31.111 event download</td>
-            <td>Indicates that data is available for a channel or application.</td>
-          </tr>
-          <tr class="filterable-row" data-gen="3G" data-search="channel status event download 3g 4g 5g bearer independent protocol">
-            <td><strong>Channel status</strong></td>
-            <td>Event download</td>
-            <td><span class="pill pill-3g">3G</span> <span class="pill pill-4g">4G</span> <span class="pill pill-5g">5G</span></td>
-            <td>TS 102 223 / TS 31.111 event download</td>
-            <td>Reports status changes for an established channel.</td>
-          </tr>
-          <tr class="filterable-row" data-gen="3G" data-search="access technology change event download 3g 4g 5g rat change">
-            <td><strong>Access Technology Change</strong></td>
-            <td>Event download</td>
-            <td><span class="pill pill-3g">3G</span> <span class="pill pill-4g">4G</span> <span class="pill pill-5g">5G</span></td>
-            <td>TS 102 223 / TS 31.111 event download</td>
-            <td>Notifies the UICC when the current access technology changes.</td>
-          </tr>
-          <tr class="filterable-row" data-gen="3G" data-search="display parameters changed event download 3g 4g 5g display update">
-            <td><strong>Display parameters changed</strong></td>
-            <td>Event download</td>
-            <td><span class="pill pill-3g">3G</span> <span class="pill pill-4g">4G</span> <span class="pill pill-5g">5G</span></td>
-            <td>TS 102 223 / TS 31.111 event download</td>
-            <td>Reports a change in display parameters to the UICC.</td>
-          </tr>
-          <tr class="filterable-row" data-gen="3G" data-search="local connection event download 3g 4g 5g local bearer connection request">
-            <td><strong>Local Connection</strong></td>
-            <td>Event download</td>
-            <td><span class="pill pill-3g">3G</span> <span class="pill pill-4g">4G</span> <span class="pill pill-5g">5G</span></td>
-            <td>TS 102 223 / TS 31.111 event download</td>
-            <td>Indicates a connection request on a local bearer.</td>
-          </tr>
-          <tr class="filterable-row" data-gen="3G" data-search="network search mode change event download 3g 4g 5g manual automatic mode">
-            <td><strong>Network Search Mode Change</strong></td>
-            <td>Event download</td>
-            <td><span class="pill pill-3g">3G</span> <span class="pill pill-4g">4G</span> <span class="pill pill-5g">5G</span></td>
-            <td>TS 102 223 / TS 31.111 event download</td>
-            <td>Notifies the UICC when the terminal search mode changes.</td>
-          </tr>
-          <tr class="filterable-row" data-gen="3G" data-search="browsing status event download 3g 4g 5g browsing">
-            <td><strong>Browsing status</strong></td>
-            <td>Event download</td>
-            <td><span class="pill pill-3g">3G</span> <span class="pill pill-4g">4G</span> <span class="pill pill-5g">5G</span></td>
-            <td>TS 102 223 / TS 31.111 event download</td>
-            <td>Reports browser browsing status changes.</td>
-          </tr>
-          <tr class="filterable-row" data-gen="3G" data-search="mms transfer status event download 3g 4g 5g mms">
-            <td><strong>MMS Transfer status</strong></td>
-            <td>Event download</td>
-            <td><span class="pill pill-3g">3G</span> <span class="pill pill-4g">4G</span> <span class="pill pill-5g">5G</span></td>
-            <td>TS 102 223 / TS 31.111 event download</td>
-            <td>Reports multimedia message transfer status.</td>
-          </tr>
-          <tr class="filterable-row" data-gen="3G" data-search="frame parameters changed frame information changed event download 3g 4g 5g frames">
-            <td><strong>Frame parameters / information changed</strong></td>
-            <td>Event download</td>
-            <td><span class="pill pill-3g">3G</span> <span class="pill pill-4g">4G</span> <span class="pill pill-5g">5G</span></td>
-            <td>TS 102 223 / TS 31.111 event download</td>
-            <td>Reports frame-related parameter or information changes.</td>
-          </tr>
-          <tr class="filterable-row" data-gen="4G" data-search="hci connectivity event download 4g 5g human computer interface">
-            <td><strong>HCI connectivity event</strong></td>
-            <td>Event download</td>
-            <td><span class="pill pill-4g">4G</span> <span class="pill pill-5g">5G</span></td>
-            <td>TS 102 223 V14.2.0 / V18.2.0</td>
-            <td>Reports HCI connectivity changes.</td>
-          </tr>
-          <tr class="filterable-row" data-gen="4G" data-search="contactless state request event download 4g 5g contactless">
-            <td><strong>Contactless state request</strong></td>
-            <td>Event download</td>
-            <td><span class="pill pill-4g">4G</span> <span class="pill pill-5g">5G</span></td>
-            <td>TS 102 223 V14.2.0 / V18.2.0</td>
-            <td>Reports contactless-state request events.</td>
-          </tr>
-          <tr class="filterable-row" data-gen="4G" data-search="poll interval negotiation event download 4g 5g polling">
-            <td><strong>Poll Interval Negotiation</strong></td>
-            <td>Event download</td>
-            <td><span class="pill pill-4g">4G</span> <span class="pill pill-5g">5G</span></td>
-            <td>TS 102 223 V14.2.0 / V18.2.0</td>
-            <td>Reports negotiation of the polling interval.</td>
-          </tr>
-          <tr class="filterable-row" data-gen="4G" data-search="wlan access status event download 4g 5g wlan bearer">
-            <td><strong>WLAN access status</strong></td>
-            <td>Event download</td>
-            <td><span class="pill pill-4g">4G</span> <span class="pill pill-5g">5G</span></td>
-            <td>TS 102 223 V14.2.0 / V18.2.0</td>
-            <td>Reserved by 3GPP for WLAN access-status reporting.</td>
-          </tr>
-          <tr class="filterable-row" data-gen="4G" data-search="network rejection for e-utran event download 4g 5g rejection">
-            <td><strong>Network Rejection for E-UTRAN</strong></td>
-            <td>Event download</td>
-            <td><span class="pill pill-4g">4G</span> <span class="pill pill-5g">5G</span></td>
-            <td>TS 102 223 V14.2.0 / V18.2.0</td>
-            <td>Reports network rejection for E-UTRAN.</td>
-          </tr>
-          <tr class="filterable-row" data-gen="5G" data-search="network rejection for ngran event download 5g">
-            <td><strong>Network Rejection for NGRAN</strong></td>
-            <td>Event download</td>
-            <td><span class="pill pill-5g">5G</span></td>
-            <td>TS 102 223 V18.2.0</td>
-            <td>Reports network rejection for NG-RAN.</td>
-          </tr>
-          <tr class="filterable-row" data-gen="5G" data-search="network rejection for satellite ng-ran event download 5g">
-            <td><strong>Network Rejection for Satellite NG-RAN</strong></td>
-            <td>Event download</td>
-            <td><span class="pill pill-5g">5G</span></td>
-            <td>TS 102 223 V18.2.0</td>
-            <td>Reports network rejection for satellite NG-RAN.</td>
-          </tr>
-          <tr class="filterable-row" data-gen="5G" data-search="slices status change event download 5g slices">
-            <td><strong>Slices Status Change</strong></td>
-            <td>Event download</td>
-            <td><span class="pill pill-5g">5G</span></td>
-            <td>TS 102 223 V18.2.0</td>
-            <td>Reports slice-status changes when supported.</td>
-          </tr>
-        </tbody>
-      </table>
-
-      <h3 style="margin:18px 0 8px; font-size:18px; color:#244c76;">Related proactive commands and envelope-adjacent support</h3>
-      <table>
-        <thead>
-          <tr>
-            <th>Command</th>
-            <th>Family</th>
-            <th>Applies</th>
-            <th>Source</th>
-            <th>Description</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr class="filterable-row" data-gen="3G" data-search="open channel proactive command bip 3g 4g 5g">
-            <td><strong>OPEN CHANNEL</strong></td>
-            <td>Bearer Independent Protocol</td>
-            <td><span class="pill pill-3g">3G</span> <span class="pill pill-4g">4G</span> <span class="pill pill-5g">5G</span></td>
-            <td>TS 102 223 / TS 31.111</td>
-            <td>Opens a data channel for UICC-initiated communication.</td>
-          </tr>
-          <tr class="filterable-row" data-gen="3G" data-search="close channel proactive command bip 3g 4g 5g">
-            <td><strong>CLOSE CHANNEL</strong></td>
-            <td>Bearer Independent Protocol</td>
-            <td><span class="pill pill-3g">3G</span> <span class="pill pill-4g">4G</span> <span class="pill pill-5g">5G</span></td>
-            <td>TS 102 223 / TS 31.111</td>
-            <td>Closes an established data channel.</td>
-          </tr>
-          <tr class="filterable-row" data-gen="3G" data-search="send data proactive command bip 3g 4g 5g">
-            <td><strong>SEND DATA</strong></td>
-            <td>Bearer Independent Protocol</td>
-            <td><span class="pill pill-3g">3G</span> <span class="pill pill-4g">4G</span> <span class="pill pill-5g">5G</span></td>
-            <td>TS 102 223 / TS 31.111</td>
-            <td>Sends data over an open channel.</td>
-          </tr>
-          <tr class="filterable-row" data-gen="3G" data-search="receive data proactive command bip 3g 4g 5g">
-            <td><strong>RECEIVE DATA</strong></td>
-            <td>Bearer Independent Protocol</td>
-            <td><span class="pill pill-3g">3G</span> <span class="pill pill-4g">4G</span> <span class="pill pill-5g">5G</span></td>
-            <td>TS 102 223 / TS 31.111</td>
-            <td>Receives data from the terminal over an open channel.</td>
-          </tr>
-          <tr class="filterable-row" data-gen="3G" data-search="get channel status proactive command bip 3g 4g 5g">
-            <td><strong>GET CHANNEL STATUS</strong></td>
-            <td>Bearer Independent Protocol</td>
-            <td><span class="pill pill-3g">3G</span> <span class="pill pill-4g">4G</span> <span class="pill pill-5g">5G</span></td>
-            <td>TS 102 223 / TS 31.111</td>
-            <td>Queries status for an open channel.</td>
-          </tr>
-          <tr class="filterable-row" data-gen="3G" data-search="service search proactive command 3g 4g 5g">
-            <td><strong>SERVICE SEARCH</strong></td>
-            <td>Service discovery</td>
-            <td><span class="pill pill-3g">3G</span> <span class="pill pill-4g">4G</span> <span class="pill pill-5g">5G</span></td>
-            <td>TS 102 223 / TS 31.111</td>
-            <td>Looks for services available on remote devices.</td>
-          </tr>
-          <tr class="filterable-row" data-gen="3G" data-search="get service information proactive command 3g 4g 5g">
-            <td><strong>GET SERVICE INFORMATION</strong></td>
-            <td>Service discovery</td>
-            <td><span class="pill pill-3g">3G</span> <span class="pill pill-4g">4G</span> <span class="pill pill-5g">5G</span></td>
-            <td>TS 102 223 / TS 31.111</td>
-            <td>Retrieves detailed information for a service.</td>
-          </tr>
-          <tr class="filterable-row" data-gen="3G" data-search="declare service proactive command 3g 4g 5g">
-            <td><strong>DECLARE SERVICE</strong></td>
-            <td>Service database</td>
-            <td><span class="pill pill-3g">3G</span> <span class="pill pill-4g">4G</span> <span class="pill pill-5g">5G</span></td>
-            <td>TS 102 223 / TS 31.111</td>
-            <td>Adds or deletes a service from the terminal service database.</td>
-          </tr>
-          <tr class="filterable-row" data-gen="3G" data-search="perform card apdu proactive command multiple card 3g 4g 5g">
-            <td><strong>PERFORM CARD APDU</strong></td>
-            <td>Multiple card</td>
-            <td><span class="pill pill-3g">3G</span> <span class="pill pill-4g">4G</span> <span class="pill pill-5g">5G</span></td>
-            <td>TS 102 223 / TS 31.111</td>
-            <td>Sends a C-APDU to an additional card reader and returns the R-APDU.</td>
-          </tr>
-          <tr class="filterable-row" data-gen="3G" data-search="set frames proactive command 3g 4g 5g">
-            <td><strong>SET FRAMES</strong></td>
-            <td>Frame support</td>
-            <td><span class="pill pill-3g">3G</span> <span class="pill pill-4g">4G</span> <span class="pill pill-5g">5G</span></td>
-            <td>TS 102 223 / TS 31.111</td>
-            <td>Defines frame content for frame-based UI support.</td>
-          </tr>
-          <tr class="filterable-row" data-gen="3G" data-search="get frames status proactive command 3g 4g 5g">
-            <td><strong>GET FRAMES STATUS</strong></td>
-            <td>Frame support</td>
-            <td><span class="pill pill-3g">3G</span> <span class="pill pill-4g">4G</span> <span class="pill pill-5g">5G</span></td>
-            <td>TS 102 223 / TS 31.111</td>
-            <td>Retrieves current frame status information.</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
-    <div class="section">
-      <h2>3. 5G commands</h2>
-      <p>These rows are 5G-specific or 5G-applicable entries from the archive.</p>
-
-      <h3 style="margin:18px 0 8px; font-size:18px; color:#244c76;">5G-only profile / support extensions</h3>
-      <table>
-        <thead>
-          <tr>
-            <th>Item</th>
-            <th>Area</th>
-            <th>Source / Clause</th>
-            <th>Why 5G-only</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr class="filterable-row" data-gen="5G" data-search="5g only provide local information nmr utran e-utran satellite e-utran ngran satellite ng-ran">
-            <td><strong>PROVIDE LOCAL INFORMATION (NMR(UTRAN/E-UTRAN/Satellite E-UTRAN/NGRAN/Satellite NG-RAN))</strong></td>
-            <td>Profile support byte</td>
-            <td>5g/TS_102_223_CAT_V18_2_0.txt, profile download support bytes</td>
-            <td>5G introduces NGRAN and Satellite NG-RAN into the NMR profile tuple; no match found in 3G or 4G.</td>
-          </tr>
-          <tr class="filterable-row" data-gen="5G" data-search="5g only provide local information slice(s) information">
-            <td><strong>PROVIDE LOCAL INFORMATION, Slice(s) information</strong></td>
-            <td>Profile support byte</td>
-            <td>5g/TS_102_223_CAT_V18_2_0.txt, line 3555</td>
-            <td>No 3G/4G counterpart found; slice information appears only in the 5G capability profile.</td>
-          </tr>
-          <tr class="filterable-row" data-gen="5G" data-search="5g only provide local information rejected slice(s) information">
-            <td><strong>PROVIDE LOCAL INFORMATION, Rejected Slice(s) Information</strong></td>
-            <td>Profile support byte</td>
-            <td>5g/TS_102_223_CAT_V18_2_0.txt, line 3582</td>
-            <td>No 3G/4G counterpart found; rejected-slice reporting is a 5G-specific profile extension.</td>
-          </tr>
-          <tr class="filterable-row" data-gen="5G" data-search="5g only extended information for pli location information event location status event network rejection">
-            <td><strong>Support of Extended information for PLI</strong></td>
-            <td>Profile support byte</td>
-            <td>5g/TS_102_223_CAT_V18_2_0.txt, lines 3584-3586</td>
-            <td>Extends location information and event handling in 5G; not found in the 3G/4G texts.</td>
-          </tr>
-          <tr class="filterable-row" data-gen="5G" data-search="5g only chaining of pli envelope commands">
-            <td><strong>Support of chaining of PLI/Envelope commands</strong></td>
-            <td>Profile support byte</td>
-            <td>5g/TS_102_223_CAT_V18_2_0.txt, line 3587-3588</td>
-            <td>Chaining support is listed only in the 5G profile capability bytes.</td>
-          </tr>
-          <tr class="filterable-row" data-gen="5G" data-search="5g only 5g prose usage information reporting">
-            <td><strong>5G ProSe usage information reporting</strong></td>
-            <td>Profile support byte</td>
-            <td>5g/TS_102_223_CAT_V18_2_0.txt, line 3589-3590</td>
-            <td>Explicitly 5G ProSe-specific and absent from 3G/4G.</td>
-          </tr>
-          <tr class="filterable-row" data-gen="5G" data-search="5g only provide local information ng-ran satellite ng-ran timing advance information">
-            <td><strong>PROVIDE LOCAL INFORMATION (NG-RAN/Satellite NG-RAN Timing Advance Information)</strong></td>
-            <td>Profile support byte</td>
-            <td>5g/TS_102_223_CAT_V18_2_0.txt, lines 3627-3629</td>
-            <td>NG-RAN / Satellite NG-RAN timing advance support is 5G-specific.</td>
-          </tr>
-          <tr class="filterable-row" data-gen="5G" data-search="5g only support of cag feature">
-            <td><strong>Support of CAG feature</strong></td>
-            <td>Profile support byte</td>
-            <td>5g/TS_102_223_CAT_V18_2_0.txt, line 3561-3562</td>
-            <td>Closed Access Group support appears only in the 5G profile bytes.</td>
-          </tr>
-        </tbody>
-      </table>
-
-      <h3 style="margin:18px 0 8px; font-size:18px; color:#244c76;">5G-only event additions</h3>
-      <table>
-        <thead>
-          <tr>
-            <th>Event</th>
-            <th>Area</th>
-            <th>Source / Clause</th>
-            <th>Why 5G-only</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr class="filterable-row" data-gen="5G" data-search="5g only data connection status change pdu connection">
-            <td><strong>Data Connection Status Change – PDU Connection</strong></td>
-            <td>Event support</td>
-            <td>5g/TS_102_223_CAT_V18_2_0.txt, lines 3550-3551</td>
-            <td>4G uses PDP/PDN connection language; PDU Connection is the 5G-specific form.</td>
-          </tr>
-          <tr class="filterable-row" data-gen="5G" data-search="5g only network rejection for ngran">
-            <td><strong>Event: Network Rejection for NGRAN</strong></td>
-            <td>Event support</td>
-            <td>5g/TS_102_223_CAT_V18_2_0.txt, line 3552</td>
-            <td>No 3G/4G match found; this rejection target is specific to 5G NR access.</td>
-          </tr>
-          <tr class="filterable-row" data-gen="5G" data-search="5g only network rejection for satellite ng-ran">
-            <td><strong>Event: Network Rejection for Satellite NG-RAN</strong></td>
-            <td>Event support</td>
-            <td>5g/TS_102_223_CAT_V18_2_0.txt, lines 3559-3560</td>
-            <td>Satellite NG-RAN is a 5G-only access domain in this profile context.</td>
-          </tr>
-          <tr class="filterable-row" data-gen="5G" data-search="5g only slices status change">
-            <td><strong>Event: Slices Status Change</strong></td>
-            <td>Event support</td>
-            <td>5g/TS_102_223_CAT_V18_2_0.txt, lines 3563-3564</td>
-            <td>Slice-status event support is present only in the 5G text.</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
-    <div class="source-list">
-      <h3>Referenced files</h3>
-      <div class="source-grid">
-        <div>3g/TS_102_223_CAT_V7_17_0.pdf</div><div>3g/TS_131_111_USAT_V7_17_0.pdf</div><div>4g/TS_102_223_CAT_V14_2_0.pdf</div><div>4g/TS_131_111_USAT_V14_8_0.pdf</div><div>5g/TS_102_223_CAT_V18_2_0.pdf</div><div>5g/TS_131_111_USAT_V18_9_0.pdf</div>
-      </div>
-      <div class="legend">
-        <span>3G = Release 7 baseline</span>
-        <span>4G = Release 14 extends R7</span>
-        <span>5G = Release 18 extends R14</span>
-      </div>
-      <div class="note">Each folder is one 3GPP release; later releases inherit earlier commands, and 5G-specific items remain isolated.</div>
-    </div>
-  </div>
-
-<script>
-  const tabs = Array.from(document.querySelectorAll('.tab'));
-  const search = document.getElementById('search');
-  const rows = Array.from(document.querySelectorAll('#rows tr, .filterable-row'));
-  const stats = document.getElementById('stats');
-  let active = 'all';
-
-  function rowMatchesGeneration(row, filter) {
-    if (filter === 'all') return true;
-    const pillClass = `.pill-${filter.toLowerCase()}`;
-    const pills = row.querySelectorAll('.pill');
-    return row.dataset.gen === filter && pills.length === 1 && !!row.querySelector(pillClass);
-  }
-
-  function applyFilters() {
-    const q = search.value.trim().toLowerCase();
-    let visible = 0;
-    for (const row of rows) {
-      const hay = row.dataset.search || '';
-      const okGen = rowMatchesGeneration(row, active);
-      const okSearch = !q || hay.includes(q);
-      const show = okGen && okSearch;
-      row.classList.toggle('hidden', !show);
-      if (show) visible += 1;
-    }
-    stats.textContent = `${visible} of ${rows.length} rows`;
-  }
-
-  tabs.forEach(btn => btn.addEventListener('click', () => {
-    tabs.forEach(t => t.classList.remove('active'));
-    btn.classList.add('active');
-    active = btn.dataset.filter;
-    applyFilters();
-  }));
-  search.addEventListener('input', applyFilters);
-  applyFilters();
-</script>
-</body>
-</html>
+     1|<!doctype html>
+     2|<html lang="en">
+     3|<head>
+     4|  <meta charset="utf-8" />
+     5|  <meta name="viewport" content="width=device-width, initial-scale=1" />
+     6|  <title>USAT / CAT Command Reference (Release 7 → 14 → 18)</title>
+     7|  <style>
+     8|    :root {
+     9|      --bg: #f6f7fb;
+    10|      --panel: #ffffff;
+    11|      --text: #1f2a37;
+    12|      --muted: #6b7280;
+    13|      --line: #d8dee9;
+    14|      --accent: #2457a6;
+    15|      --accent2: #1f6feb;
+    16|      --chip3: #d9f7e5;
+    17|      --chip4: #d9efff;
+    18|      --chip5: #efe0ff;
+    19|      --shadow: 0 10px 30px rgba(16, 24, 40, 0.06);
+    20|    }
+    21|    * { box-sizing: border-box; }
+    22|    body { margin: 0; font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: var(--bg); color: var(--text); }
+    23|    .wrap { max-width: 1300px; margin: 0 auto; padding: 32px 24px 48px; }
+    24|    .hero { background: var(--panel); border: 1px solid var(--line); border-radius: 18px; box-shadow: var(--shadow); padding: 24px 26px 18px; }
+    25|    h1 { margin: 0 0 8px; font-size: clamp(28px, 3vw, 42px); line-height: 1.1; color: #23314a; }
+    26|    .subtitle { color: var(--muted); font-size: 15px; line-height: 1.45; }
+    27|    .toolbar { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; margin-top: 18px; padding-top: 18px; border-top: 1px solid var(--line); }
+    28|    .tabs { display: inline-flex; gap: 8px; background: #f1f5f9; padding: 6px; border-radius: 12px; }
+    29|    .tab { border: 0; background: transparent; padding: 10px 16px; border-radius: 10px; font-weight: 700; color: #48566c; cursor: pointer; }
+    30|    .tab.active { background: var(--accent); color: #fff; box-shadow: 0 4px 16px rgba(36, 87, 166, 0.25); }
+    31|    .search { flex: 1 1 320px; min-width: 240px; }
+    32|    .search input { width: 100%; border: 1px solid var(--line); background: #fff; border-radius: 12px; padding: 12px 14px; font-size: 15px; outline: none; }
+    33|    .stats { margin-left: auto; font-weight: 700; color: #40506a; white-space: nowrap; }
+    34|    .section { margin-top: 22px; }
+    35|    .section h2 { font-size: 24px; color: #244c76; margin: 18px 0 8px; }
+    36|    .section p { margin: 0 0 14px; color: var(--muted); }
+    37|    table { width: 100%; border-collapse: collapse; background: var(--panel); border: 1px solid var(--line); border-radius: 16px; overflow: hidden; box-shadow: var(--shadow); }
+    38|    thead th { background: #eef3f8; text-align: left; padding: 14px 12px; font-size: 14px; color: #334155; border-bottom: 1px solid var(--line); }
+    39|    tbody td { padding: 14px 12px; vertical-align: top; border-bottom: 1px solid var(--line); font-size: 14px; line-height: 1.45; }
+    40|    tbody tr:hover { background: #f9fbff; }
+    41|    tbody tr.hidden { display: none; }
+    42|    .pill { display: inline-flex; align-items: center; justify-content: center; min-width: 38px; padding: 4px 10px; border-radius: 999px; font-weight: 800; font-size: 12px; letter-spacing: 0.02em; }
+    43|    .pill-3g { background: var(--chip3); color: #166534; }
+    44|    .pill-4g { background: var(--chip4); color: #075985; }
+    45|    .pill-5g { background: var(--chip5); color: #6b21a8; }
+    46|    .source-list { margin-top: 18px; background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 16px 18px; box-shadow: var(--shadow); }
+    47|    .source-list h3 { margin: 0 0 10px; font-size: 16px; color: #334155; }
+    48|    .source-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 8px 18px; color: var(--muted); font-size: 14px; }
+    49|    .note { margin-top: 12px; color: var(--muted); font-size: 13px; }
+    50|    .legend { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+    51|    .legend span { font-size: 12px; color: #475569; background: #f8fafc; border: 1px solid var(--line); padding: 5px 9px; border-radius: 999px; }
+    52|    @media (max-width: 900px) {
+    53|      .stats { margin-left: 0; }
+    54|      table, thead, tbody, th, td, tr { font-size: 13px; }
+    55|      thead { display: none; }
+    56|      table, tbody, tr, td { display: block; width: 100%; }
+    57|      tbody tr { border-bottom: 1px solid var(--line); padding: 10px 0; }
+    58|      tbody td { border: 0; padding: 6px 12px; }
+    59|      tbody td::before { content: attr(data-label) ": "; font-weight: 700; color: #475569; }
+    60|    }
+    61|  </style>
+    62|</head>
+    63|<body>
+    64|  <div class="wrap">
+    65|    <div class="hero">
+    66|      <h1>USAT / CAT Command Reference — Release 7 → 14 → 18</h1>
+    67|      <div class="subtitle">
+    68|        Sources: 3GPP TS 31.111 / ETSI TS 102 223 Release 7 (3G), Release 14 (4G, extends R7), and Release 18 (5G, extends R14). Each folder holds one distinct release; later releases inherit earlier commands. Shared event-download items such as MT call, Call connected, and Call disconnected are treated as inherited across releases.
+    69|      </div>
+    70|      <div class="toolbar">
+    71|        <div class="tabs" role="tablist" aria-label="Release stack filter">
+    72|          <button class="tab active" data-filter="all">All</button>
+    73|          <button class="tab" data-filter="3G">3G release (R7)</button>
+    74|          <button class="tab" data-filter="4G">4G release (R14)</button>
+    75|          <button class="tab" data-filter="5G">5G release (R18)</button>
+    76|        </div>
+    77|        <div class="search"><input id="search" type="search" placeholder="Search command, clause, source, or description..." /></div>
+    78|        <div class="stats" id="stats">0 rows</div>
+    79|      </div>
+    80|    </div>
+    81|
+    82|    <div class="section">
+    83|      <h2>1. Proactive Commands</h2>
+    84|      <p>Commands the UICC sends to the terminal. This page focuses on the rows most useful for a compact browser reference.</p>
+    85|      <table>
+    86|        <thead>
+    87|          <tr>
+    88|            <th>UI Checkbox</th>
+    89|            <th>ETSI Command</th>
+    90|            <th>Clause(s)</th>
+    91|            <th>Applies</th>
+    92|            <th>Source</th>
+    93|            <th>Description</th>
+    94|          </tr>
+    95|        </thead>
+    96|        <tbody id="rows">
+    97|          <tr data-gen="3G" data-search="3g display &amp; ui display text display text 6.4.1 me 3gpp ts 31.111 r7 (usat) uicc requests the me to display a text string to the user, with optional priority and clear-after conditions.">
+    98|      <td><strong>Display Text</strong></td>
+    99|      <td>DISPLAY TEXT</td>
+   100|      <td>6.4.1</td>
+   101|      <td><span class="pill pill-3g">3G</span></td>
+   102|      <td>3GPP TS 31.111 R7 (USAT)</td>
+   103|      <td>UICC requests the ME to display a text string to the user, with optional priority and clear-after conditions.</td>
+   104|    </tr><tr data-gen="3G" data-search="3g user input get inkey get inkey 6.4.2 me 3gpp ts 31.111 r7 (usat) uicc requests a single character (digit, character or yes/no) keystroke from the user.">
+   105|      <td><strong>Get Inkey</strong></td>
+   106|      <td>GET INKEY</td>
+   107|      <td>6.4.2</td>
+   108|      <td><span class="pill pill-3g">3G</span></td>
+   109|      <td>3GPP TS 31.111 R7 (USAT)</td>
+   110|      <td>UICC requests a single character (digit, character or Yes/No) keystroke from the user.</td>
+   111|    </tr><tr data-gen="3G" data-search="3g user input get input get input 6.4.3 me 3gpp ts 31.111 r7 (usat) uicc requests the me to prompt the user for a string of characters, with min/max length and echo/hide options.">
+   112|      <td><strong>Get Input</strong></td>
+   113|      <td>GET INPUT</td>
+   114|      <td>6.4.3</td>
+   115|      <td><span class="pill pill-3g">3G</span></td>
+   116|      <td>3GPP TS 31.111 R7 (USAT)</td>
+   117|      <td>UICC requests the ME to prompt the user for a string of characters, with min/max length and echo/hide options.</td>
+   118|    </tr><tr data-gen="3G" data-search="3g display &amp; ui play tone play tone 6.4.5 me 3gpp ts 31.111 r7 (usat) uicc instructs the me to play an audible tone for a specified duration.">
+   119|      <td><strong>Play Tone</strong></td>
+   120|      <td>PLAY TONE</td>
+   121|      <td>6.4.5</td>
+   122|      <td><span class="pill pill-3g">3G</span></td>
+   123|      <td>3GPP TS 31.111 R7 (USAT)</td>
+   124|      <td>UICC instructs the ME to play an audible tone for a specified duration.</td>
+   125|    </tr><tr data-gen="3G" data-search="3g uicc management refresh refresh 6.4.7 me / uicc 3gpp ts 31.111 r7 (usat) uicc notifies the me that file contents or configuration changed; triggers cache invalidation, reset or full re-initialisation.">
+   126|      <td><strong>Refresh</strong></td>
+   127|      <td>REFRESH</td>
+   128|      <td>6.4.7</td>
+   129|      <td><span class="pill pill-3g">3G</span></td>
+   130|      <td>3GPP TS 31.111 R7 (USAT)</td>
+   131|      <td>UICC notifies the ME that file contents or configuration changed; triggers cache invalidation, reset or full re-initialisation.</td>
+   132|    </tr><tr data-gen="3G" data-search="3g menus set up menu set up menu 6.4.8 me 3gpp ts 31.111 r7 (usat) uicc supplies the me with the main sim toolkit menu of items to present to the user.">
+   133|      <td><strong>Set Up Menu</strong></td>
+   134|      <td>SET UP MENU</td>
+   135|      <td>6.4.8</td>
+   136|      <td><span class="pill pill-3g">3G</span></td>
+   137|      <td>3GPP TS 31.111 R7 (USAT)</td>
+   138|      <td>UICC supplies the ME with the main SIM Toolkit menu of items to present to the user.</td>
+   139|    </tr><tr data-gen="3G" data-search="3g menus select item select item 6.4.9 me 3gpp ts 31.111 r7 (usat) uicc asks the me to present a list of items and return the user&#x27;s selection.">
+   140|      <td><strong>Select Item</strong></td>
+   141|      <td>SELECT ITEM</td>
+   142|      <td>6.4.9</td>
+   143|      <td><span class="pill pill-3g">3G</span></td>
+   144|      <td>3GPP TS 31.111 R7 (USAT)</td>
+   145|      <td>UICC asks the ME to present a list of items and return the user&#x27;s selection.</td>
+   146|    </tr><tr data-gen="3G" data-search="3g messaging send short message send short message 6.4.10 me / network 3gpp ts 31.111 r7 (usat) uicc instructs the me to send an sms-submit or sms-command to the network on its behalf.">
+   147|      <td><strong>Send Short Message</strong></td>
+   148|      <td>SEND SHORT MESSAGE</td>
+   149|      <td>6.4.10</td>
+   150|      <td><span class="pill pill-3g">3G</span></td>
+   151|      <td>3GPP TS 31.111 R7 (USAT)</td>
+   152|      <td>UICC instructs the ME to send an SMS-SUBMIT or SMS-COMMAND to the network on its behalf.</td>
+   153|    </tr><tr data-gen="3G" data-search="3g supplementary services send ss send ss 6.4.11 me / network 3gpp ts 31.111 r7 (usat) uicc requests the me to send a supplementary service control string over the network.">
+   154|      <td><strong>Send SS</strong></td>
+   155|      <td>SEND SS</td>
+   156|      <td>6.4.11</td>
+   157|      <td><span class="pill pill-3g">3G</span></td>
+   158|      <td>3GPP TS 31.111 R7 (USAT)</td>
+   159|      <td>UICC requests the ME to send a supplementary service control string over the network.</td>
+   160|    </tr><tr data-gen="3G" data-search="3g supplementary services send ussd send ussd 6.4.12 me / network 3gpp ts 31.111 r7 (usat) uicc instructs the me to send a ussd string to the network and return the response.">
+   161|      <td><strong>Send USSD</strong></td>
+   162|      <td>SEND USSD</td>
+   163|      <td>6.4.12</td>
+   164|      <td><span class="pill pill-3g">3G</span></td>
+   165|      <td>3GPP TS 31.111 R7 (USAT)</td>
+   166|      <td>UICC instructs the ME to send a USSD string to the network and return the response.</td>
+   167|    </tr><tr data-gen="3G" data-search="3g call control set up call set up call 6.4.13 me / network 3gpp ts 31.111 r7 (usat) uicc requests the me to originate a call, optionally with redial and control parameters.">
+   168|      <td><strong>Set Up Call</strong></td>
+   169|      <td>SET UP CALL</td>
+   170|      <td>6.4.13</td>
+   171|      <td><span class="pill pill-3g">3G</span></td>
+   172|      <td>3GPP TS 31.111 R7 (USAT)</td>
+   173|      <td>UICC requests the ME to originate a call, optionally with redial and control parameters.</td>
+   174|    </tr><tr data-gen="3G" data-search="3g events &amp; idle set up event list set up event list 6.4.16 me etsi ts 102 223 r7 (cat) uicc supplies the me with an event list so it can be notified about selected network and device events.">
+   175|      <td><strong>Set Up Event List</strong></td>
+   176|      <td>SET UP EVENT LIST</td>
+   177|      <td>6.4.16</td>
+   178|      <td><span class="pill pill-3g">3G</span></td>
+   179|      <td>ETSI TS 102 223 R7 (CAT)</td>
+   180|      <td>UICC supplies the ME with an event list so it can be notified about selected network and device events.</td>
+   181|    </tr><tr data-gen="3G" data-search="3g timers timer management timer management 6.4.21 me etsi ts 102 223 r7 (cat) starts, stops, or queries a terminal timer on behalf of the uicc.">
+   182|      <td><strong>Timer Management</strong></td>
+   183|      <td>TIMER MANAGEMENT</td>
+   184|      <td>6.4.21</td>
+   185|      <td><span class="pill pill-3g">3G</span></td>
+   186|      <td>ETSI TS 102 223 R7 (CAT)</td>
+   187|      <td>Starts, stops, or queries a terminal timer on behalf of the UICC.</td>
+   188|    </tr><tr data-gen="3G" data-search="3g idle mode set up idle mode text set up idle mode text 6.4.22 me etsi ts 102 223 r7 (cat) supplies a text string to be displayed by the terminal in idle mode.">
+   189|      <td><strong>Set Up Idle Mode Text</strong></td>
+   190|      <td>SET UP IDLE MODE TEXT</td>
+   191|      <td>6.4.22</td>
+   192|      <td><span class="pill pill-3g">3G</span></td>
+   193|      <td>ETSI TS 102 223 R7 (CAT)</td>
+   194|      <td>Supplies a text string to be displayed by the terminal in idle mode.</td>
+   195|    </tr><tr data-gen="3G" data-search="3g data &amp; browsing launch browser launch browser 6.4.26 me etsi ts 102 223 r7 (cat) uicc requests the me to launch its browser and open a specified url with optional bearer parameters.">
+   196|      <td><strong>Launch Browser</strong></td>
+   197|      <td>LAUNCH BROWSER</td>
+   198|      <td>6.4.26</td>
+   199|      <td><span class="pill pill-3g">3G</span></td>
+   200|      <td>ETSI TS 102 223 R7 (CAT)</td>
+   201|      <td>UICC requests the ME to launch its browser and open a specified URL with optional bearer parameters.</td>
+   202|    </tr><tr data-gen="4G" data-search="4g proactive send short message send short message 6.4.10 usat/cat 3gpp ts 31.111 v14.8.0 uicc instructs the me to send an sms to the network on behalf of the uicc.">
+   203|      <td><strong>Send Short Message</strong></td>
+   204|      <td>SEND SHORT MESSAGE</td>
+   205|      <td>6.4.10</td>
+   206|      <td><span class="pill pill-4g">4G</span></td>
+   207|      <td>3GPP TS 31.111 V14.8.0</td>
+   208|      <td>UICC instructs the ME to send an SMS to the network on behalf of the UICC.</td>
+   209|    </tr><tr data-gen="4G" data-search="4g proactive send ss send ss 6.4.11 usat/cat 3gpp ts 31.111 v14.8.0 uicc requests the me to send a supplementary service control string over the network.">
+   210|      <td><strong>Send SS</strong></td>
+   211|      <td>SEND SS</td>
+   212|      <td>6.4.11</td>
+   213|      <td><span class="pill pill-4g">4G</span></td>
+   214|      <td>3GPP TS 31.111 V14.8.0</td>
+   215|      <td>UICC requests the ME to send a supplementary service control string over the network.</td>
+   216|    </tr><tr data-gen="4G" data-search="4g proactive send ussd send ussd 6.4.12 usat/cat 3gpp ts 31.111 v14.8.0 uicc requests the me to send a ussd string and return the network response.">
+   217|      <td><strong>Send USSD</strong></td>
+   218|      <td>SEND USSD</td>
+   219|      <td>6.4.12</td>
+   220|      <td><span class="pill pill-4g">4G</span></td>
+   221|      <td>3GPP TS 31.111 V14.8.0</td>
+   222|      <td>UICC requests the ME to send a USSD string and return the network response.</td>
+   223|    </tr><tr data-gen="4G" data-search="4g proactive set up call set up call 6.4.13 usat/cat 3gpp ts 31.111 v14.8.0 uicc instructs the me to originate a voice/data call with optional confirmation and call parameters.">
+   224|      <td><strong>Set Up Call</strong></td>
+   225|      <td>SET UP CALL</td>
+   226|      <td>6.4.13</td>
+   227|      <td><span class="pill pill-4g">4G</span></td>
+   228|      <td>3GPP TS 31.111 V14.8.0</td>
+   229|      <td>UICC instructs the ME to originate a voice/data call with optional confirmation and call parameters.</td>
+   230|    </tr><tr data-gen="4G" data-search="4g proactive polling off polling off 6.4.14 usat/cat 3gpp ts 31.111 v14.8.0 requests the me to stop proactive status polling until further notice.">
+   231|      <td><strong>Polling Off</strong></td>
+   232|      <td>POLLING OFF</td>
+   233|      <td>6.4.14</td>
+   234|      <td><span class="pill pill-4g">4G</span></td>
+   235|      <td>3GPP TS 31.111 V14.8.0</td>
+   236|      <td>Requests the ME to stop proactive status polling until further notice.</td>
+   237|    </tr><tr data-gen="4G" data-search="4g information provide local information provide local information 6.4.15 usat/cat 3gpp ts 31.111 v14.8.0 returns local information such as location, imei, network measurements, time/date, access technology, and rel-14 wlan/e-utran timing data.">
+   238|      <td><strong>Provide Local Information</strong></td>
+   239|      <td>PROVIDE LOCAL INFORMATION</td>
+   240|      <td>6.4.15</td>
+   241|      <td><span class="pill pill-4g">4G</span></td>
+   242|      <td>3GPP TS 31.111 V14.8.0</td>
+   243|      <td>Returns local information such as location, IMEI, network measurements, time/date, access technology, and Rel-14 WLAN/E-UTRAN timing data.</td>
+   244|    </tr><tr data-gen="4G" data-search="4g events set up event list set up event list 6.4.16 usat/cat etsi ts 102 223 v14.2.0 supplies the terminal with an event list; release 14 adds newer network and ims-related event support.">
+   245|      <td><strong>Set Up Event List</strong></td>
+   246|      <td>SET UP EVENT LIST</td>
+   247|      <td>6.4.16</td>
+   248|      <td><span class="pill pill-4g">4G</span></td>
+   249|      <td>ETSI TS 102 223 V14.2.0</td>
+   250|      <td>Supplies the terminal with an event list; Release 14 adds newer network and IMS-related event support.</td>
+   251|    </tr><tr data-gen="4G" data-search="4g timers timer management timer management 6.4.21 usat/cat etsi ts 102 223 v14.2.0 starts, stops, or queries a terminal timer on behalf of the uicc.">
+   252|      <td><strong>Timer Management</strong></td>
+   253|      <td>TIMER MANAGEMENT</td>
+   254|      <td>6.4.21</td>
+   255|      <td><span class="pill pill-4g">4G</span></td>
+   256|      <td>ETSI TS 102 223 V14.2.0</td>
+   257|      <td>Starts, stops, or queries a terminal timer on behalf of the UICC.</td>
+   258|    </tr><tr data-gen="4G" data-search="4g idle mode set up idle mode text set up idle mode text 6.4.22 usat/cat etsi ts 102 223 v14.2.0 supplies a text string to be displayed by the terminal in idle mode.">
+   259|      <td><strong>Set Up Idle Mode Text</strong></td>
+   260|      <td>SET UP IDLE MODE TEXT</td>
+   261|      <td>6.4.22</td>
+   262|      <td><span class="pill pill-4g">4G</span></td>
+   263|      <td>ETSI TS 102 223 V14.2.0</td>
+   264|      <td>Supplies a text string to be displayed by the terminal in idle mode.</td>
+   265|    </tr><tr data-gen="4G" data-search="4g modem run at command run at command 6.4.23 cat etsi ts 102 223 v14.2.0 requests the terminal to execute an at command and return the response to the uicc.">
+   266|      <td><strong>Run AT Command</strong></td>
+   267|      <td>RUN AT COMMAND</td>
+   268|      <td>6.4.23</td>
+   269|      <td><span class="pill pill-4g">4G</span></td>
+   270|      <td>ETSI TS 102 223 V14.2.0</td>
+   271|      <td>Requests the terminal to execute an AT command and return the response to the UICC.</td>
+   272|    </tr><tr data-gen="4G" data-search="4g telephony send dtmf send dtmf 6.4.24 cat etsi ts 102 223 v14.2.0 asks the terminal to transmit a dtmf digit string during an active call.">
+   273|      <td><strong>Send DTMF</strong></td>
+   274|      <td>SEND DTMF</td>
+   275|      <td>6.4.24</td>
+   276|      <td><span class="pill pill-4g">4G</span></td>
+   277|      <td>ETSI TS 102 223 V14.2.0</td>
+   278|      <td>Asks the terminal to transmit a DTMF digit string during an active call.</td>
+   279|    </tr><tr data-gen="4G" data-search="4g browser launch browser launch browser 6.4.26 usat/cat etsi ts 102 223 v14.2.0 requests the terminal to launch its browser to a specified url with bearer and gateway parameters.">
+   280|      <td><strong>Launch Browser</strong></td>
+   281|      <td>LAUNCH BROWSER</td>
+   282|      <td>6.4.26</td>
+   283|      <td><span class="pill pill-4g">4G</span></td>
+   284|      <td>ETSI TS 102 223 V14.2.0</td>
+   285|      <td>Requests the terminal to launch its browser to a specified URL with bearer and gateway parameters.</td>
+   286|    </tr><tr data-gen="3G" data-search="3g proactive set up menu set up menu 6.4.8 usat/cat 3g/TS_102_223_CAT_V7_17_0.pdf supplies the terminal with menu items to integrate with the main menu for user selection.">
+   287|      <td><strong>Set Up Menu</strong></td>
+   288|      <td>SET UP MENU</td>
+   289|      <td>6.4.8</td>
+   290|      <td><span class="pill pill-3g">3G</span></td>
+   291|      <td>3G Release 7</td>
+   292|      <td>Supplies the terminal with menu items to integrate with the main menu for user selection.</td>
+   293|    </tr><tr data-gen="3G" data-search="3g proactive select item select item 6.4.9 usat/cat 3g/TS_102_223_CAT_V7_17_0.pdf presents a list of items to the user and returns the user&#x27;s selection to the uicc.">
+   294|      <td><strong>Select Item</strong></td>
+   295|      <td>SELECT ITEM</td>
+   296|      <td>6.4.9</td>
+   297|      <td><span class="pill pill-3g">3G</span></td>
+   298|      <td>3G Release 7</td>
+   299|      <td>Presents a list of items to the user and returns the user&#x27;s selection to the UICC.</td>
+   300|    </tr><tr data-gen="3G" data-search="3g messaging send short message send short message 6.4.10 usat/cat 3g/TS_102_223_CAT_V7_17_0.pdf requests the terminal to send an sms to the network on behalf of the uicc.">
+   301|      <td><strong>Send Short Message</strong></td>
+   302|      <td>SEND SHORT MESSAGE</td>
+   303|      <td>6.4.10</td>
+   304|      <td><span class="pill pill-3g">3G</span></td>
+   305|      <td>3G Release 7</td>
+   306|      <td>Requests the terminal to send an SMS to the network on behalf of the UICC.</td>
+   307|    </tr><tr data-gen="3G" data-search="3g messaging send ss send ss 6.4.11 usat/cat 3g/TS_102_223_CAT_V7_17_0.pdf sends a supplementary service control string over the network.">
+   308|      <td><strong>Send SS</strong></td>
+   309|      <td>SEND SS</td>
+   310|      <td>6.4.11</td>
+   311|      <td><span class="pill pill-3g">3G</span></td>
+   312|      <td>3G Release 7</td>
+   313|      <td>Sends a supplementary service control string over the network.</td>
+   314|    </tr><tr data-gen="3G" data-search="3g messaging send ussd send ussd 6.4.12 usat/cat 3g/TS_102_223_CAT_V7_17_0.pdf sends a ussd string to the network and returns the response to the uicc.">
+   315|      <td><strong>Send USSD</strong></td>
+   316|      <td>SEND USSD</td>
+   317|      <td>6.4.12</td>
+   318|      <td><span class="pill pill-3g">3G</span></td>
+   319|      <td>3G Release 7</td>
+   320|      <td>Sends a USSD string to the network and returns the response to the UICC.</td>
+   321|    </tr><tr data-gen="3G" data-search="3g call control set up call set up call 6.4.13 usat/cat 3g/TS_102_223_CAT_V7_17_0.pdf requests the terminal to set up a voice or data call to a specified number.">
+   322|      <td><strong>Set Up Call</strong></td>
+   323|      <td>SET UP CALL</td>
+   324|      <td>6.4.13</td>
+   325|      <td><span class="pill pill-3g">3G</span></td>
+   326|      <td>3G Release 7</td>
+   327|      <td>Requests the terminal to set up a voice or data call to a specified number.</td>
+   328|    </tr><tr data-gen="4G" data-search="4g information provide local information provide local information 6.4.15 usat/cat 4g/TS_102_223_CAT_V14_2_0.pdf returns local information such as location, imei, measurement data, time/date, access technology, or geographical location.">
+   329|      <td><strong>Provide Local Information</strong></td>
+   330|      <td>PROVIDE LOCAL INFORMATION</td>
+   331|      <td>6.4.15</td>
+   332|      <td><span class="pill pill-4g">4G</span></td>
+   333|      <td>4G Release 14</td>
+   334|      <td>Returns local information such as location, IMEI, measurement data, time/date, access technology, or geographical location.</td>
+   335|    </tr><tr data-gen="3G" data-search="3g events set up event list set up event list 6.4.16 usat/cat 3g/TS_102_223_CAT_V7_17_0.pdf supplies the terminal with an event list including release 18 network and ims-related events.">
+   336|      <td><strong>Set Up Event List</strong></td>
+   337|      <td>SET UP EVENT LIST</td>
+   338|      <td>6.4.16</td>
+   339|      <td><span class="pill pill-3g">3G</span></td>
+   340|      <td>3G Release 7</td>
+   341|      <td>Supplies the terminal with an event list including Release 18 network and IMS-related events.</td>
+   342|    </tr><tr data-gen="3G" data-search="3g card reader perform card apdu perform card apdu 6.4.17 cat 3g/TS_102_223_CAT_V7_17_0.pdf sends a c-apdu to an additional card reader and returns the r-apdu to the uicc.">
+   343|      <td><strong>Perform Card APDU</strong></td>
+   344|      <td>PERFORM CARD APDU</td>
+   345|      <td>6.4.17</td>
+   346|      <td><span class="pill pill-3g">3G</span></td>
+   347|      <td>3G Release 7</td>
+   348|      <td>Sends a C-APDU to an additional card reader and returns the R-APDU to the UICC.</td>
+   349|    </tr><tr data-gen="3G" data-search="3g timers timer management timer management 6.4.21 usat/cat 3g/TS_102_223_CAT_V7_17_0.pdf starts, stops, or queries a terminal timer on behalf of the uicc.">
+   350|      <td><strong>Timer Management</strong></td>
+   351|      <td>TIMER MANAGEMENT</td>
+   352|      <td>6.4.21</td>
+   353|      <td><span class="pill pill-3g">3G</span></td>
+   354|      <td>3G Release 7</td>
+   355|      <td>Starts, stops, or queries a terminal timer on behalf of the UICC.</td>
+   356|    </tr><tr data-gen="3G" data-search="3g idle mode set up idle mode text set up idle mode text 6.4.22 usat/cat 3g/TS_102_223_CAT_V7_17_0.pdf supplies a text string to be displayed by the terminal in idle mode.">
+   357|      <td><strong>Set Up Idle Mode Text</strong></td>
+   358|      <td>SET UP IDLE MODE TEXT</td>
+   359|      <td>6.4.22</td>
+   360|      <td><span class="pill pill-3g">3G</span></td>
+   361|      <td>3G Release 7</td>
+   362|      <td>Supplies a text string to be displayed by the terminal in idle mode.</td>
+   363|    </tr><tr data-gen="4G" data-search="4g modem run at command run at command 6.4.23 cat 4g/TS_102_223_CAT_V14_2_0.pdf requests the terminal to execute an at command and return the response to the uicc.">
+   364|      <td><strong>Run AT Command</strong></td>
+   365|      <td>RUN AT COMMAND</td>
+   366|      <td>6.4.23</td>
+   367|      <td><span class="pill pill-4g">4G</span></td>
+   368|      <td>4G Release 14</td>
+   369|      <td>Requests the terminal to execute an AT command and return the response to the UICC.</td>
+   370|    </tr><tr data-gen="3G" data-search="3g browser launch browser launch browser 6.4.26 usat/cat 3g/TS_102_223_CAT_V7_17_0.pdf requests the terminal to launch a browser to a url, with optional bearer and gateway parameters.">
+   371|      <td><strong>Launch Browser</strong></td>
+   372|      <td>LAUNCH BROWSER</td>
+   373|      <td>6.4.26</td>
+   374|      <td><span class="pill pill-3g">3G</span></td>
+   375|      <td>3G Release 7</td>
+   376|      <td>Requests the terminal to launch a browser to a URL, with optional bearer and gateway parameters.</td>
+   377|    </tr>
+   378|        </tbody>
+   379|      </table>
+   380|    </div>
+   381|
+   382|
+   383|
+   384|    <div class="section">
+   385|      <h2>2. Events (Event Download &amp; Envelopes)</h2>
+   386|      <p>Terminal-to-UICC event download rows and related envelope-adjacent proactive commands that were missing from the first pass.</p>
+   387|      <table>
+   388|        <thead>
+   389|          <tr>
+   390|            <th>Event / Command</th>
+   391|            <th>Clause Family</th>
+   392|            <th>Applies</th>
+   393|            <th>Source</th>
+   394|            <th>Description</th>
+   395|          </tr>
+   396|        </thead>
+   397|        <tbody>
+   398|          <tr class="filterable-row" data-gen="3G" data-search="mt call event download envelope terminal to uicc 3g incoming call notification">
+   399|            <td><strong>MT call</strong></td>
+   400|            <td>Event download</td>
+   401|            <td><span class="pill pill-3g">3G</span></td>
+   402|            <td>TS 102 223 / TS 31.111 event download</td>
+   403|            <td>Notifies the UICC of an incoming mobile-terminated call.</td>
+   404|          </tr>
+   405|          <tr class="filterable-row" data-gen="3G" data-search="call connected event download envelope terminal to uicc 3g call connected notification">
+   406|            <td><strong>Call connected</strong></td>
+   407|            <td>Event download</td>
+   408|            <td><span class="pill pill-3g">3G</span></td>
+   409|            <td>TS 102 223 / TS 31.111 event download</td>
+   410|            <td>Reports that a monitored call has connected.</td>
+   411|          </tr>
+   412|          <tr class="filterable-row" data-gen="3G" data-search="call disconnected event download envelope terminal to uicc 3g call disconnected notification">
+   413|            <td><strong>Call disconnected</strong></td>
+   414|            <td>Event download</td>
+   415|            <td><span class="pill pill-3g">3G</span></td>
+   416|            <td>TS 102 223 / TS 31.111 event download</td>
+   417|            <td>Reports that a monitored call has disconnected.</td>
+   418|          </tr>
+   419|          <tr class="filterable-row" data-gen="3G" data-search="location status event download 3g location update">
+   420|            <td><strong>Location status</strong></td>
+   421|            <td>Event download</td>
+   422|            <td><span class="pill pill-3g">3G</span></td>
+   423|            <td>TS 102 223 / TS 31.111 event download</td>
+   424|            <td>Reports a change in location status to the UICC.</td>
+   425|          </tr>
+   426|          <tr class="filterable-row" data-gen="3G" data-search="user activity event download 3g terminal user activity">
+   427|            <td><strong>User activity</strong></td>
+   428|            <td>Event download</td>
+   429|            <td><span class="pill pill-3g">3G</span></td>
+   430|            <td>TS 102 223 / TS 31.111 event download</td>
+   431|            <td>Notifies the UICC when user activity is detected.</td>
+   432|          </tr>
+   433|          <tr class="filterable-row" data-gen="3G" data-search="idle screen available event download 3g idle screen">
+   434|            <td><strong>Idle screen available</strong></td>
+   435|            <td>Event download</td>
+   436|            <td><span class="pill pill-3g">3G</span></td>
+   437|            <td>TS 102 223 / TS 31.111 event download</td>
+   438|            <td>Indicates that the idle screen is available for applications.</td>
+   439|          </tr>
+   440|          <tr class="filterable-row" data-gen="3G" data-search="card reader status event download 3g card reader">
+   441|            <td><strong>Card reader status</strong></td>
+   442|            <td>Event download</td>
+   443|            <td><span class="pill pill-3g">3G</span></td>
+   444|            <td>TS 102 223 / TS 31.111 event download</td>
+   445|            <td>Reports card reader status changes to the UICC.</td>
+   446|          </tr>
+   447|          <tr class="filterable-row" data-gen="3G" data-search="language selection event download 3g language change">
+   448|            <td><strong>Language selection</strong></td>
+   449|            <td>Event download</td>
+   450|            <td><span class="pill pill-3g">3G</span></td>
+   451|            <td>TS 102 223 / TS 31.111 event download</td>
+   452|            <td>Notifies the UICC when the terminal language selection changes.</td>
+   453|          </tr>
+   454|          <tr class="filterable-row" data-gen="3G" data-search="browser termination event download 3g browser closed">
+   455|            <td><strong>Browser termination</strong></td>
+   456|            <td>Event download</td>
+   457|            <td><span class="pill pill-3g">3G</span></td>
+   458|            <td>TS 102 223 / TS 31.111 event download</td>
+   459|            <td>Reports that the browser session has terminated.</td>
+   460|          </tr>
+   461|          <tr class="filterable-row" data-gen="3G" data-search="data available event download 3g channel data available">
+   462|            <td><strong>Data available</strong></td>
+   463|            <td>Event download</td>
+   464|            <td><span class="pill pill-3g">3G</span></td>
+   465|            <td>TS 102 223 / TS 31.111 event download</td>
+   466|            <td>Indicates that data is available for a channel or application.</td>
+   467|          </tr>
+   468|          <tr class="filterable-row" data-gen="3G" data-search="channel status event download 3g bearer independent protocol">
+   469|            <td><strong>Channel status</strong></td>
+   470|            <td>Event download</td>
+   471|            <td><span class="pill pill-3g">3G</span></td>
+   472|            <td>TS 102 223 / TS 31.111 event download</td>
+   473|            <td>Reports status changes for an established channel.</td>
+   474|          </tr>
+   475|          <tr class="filterable-row" data-gen="3G" data-search="access technology change event download 3g rat change">
+   476|            <td><strong>Access Technology Change</strong></td>
+   477|            <td>Event download</td>
+   478|            <td><span class="pill pill-3g">3G</span></td>
+   479|            <td>TS 102 223 / TS 31.111 event download</td>
+   480|            <td>Notifies the UICC when the current access technology changes.</td>
+   481|          </tr>
+   482|          <tr class="filterable-row" data-gen="3G" data-search="display parameters changed event download 3g display update">
+   483|            <td><strong>Display parameters changed</strong></td>
+   484|            <td>Event download</td>
+   485|            <td><span class="pill pill-3g">3G</span></td>
+   486|            <td>TS 102 223 / TS 31.111 event download</td>
+   487|            <td>Reports a change in display parameters to the UICC.</td>
+   488|          </tr>
+   489|          <tr class="filterable-row" data-gen="3G" data-search="local connection event download 3g local bearer connection request">
+   490|            <td><strong>Local Connection</strong></td>
+   491|            <td>Event download</td>
+   492|            <td><span class="pill pill-3g">3G</span></td>
+   493|            <td>TS 102 223 / TS 31.111 event download</td>
+   494|            <td>Indicates a connection request on a local bearer.</td>
+   495|          </tr>
+   496|          <tr class="filterable-row" data-gen="3G" data-search="network search mode change event download 3g 4g 5g manual automatic mode">
+   497|            <td><strong>Network Search Mode Change</strong></td>
+   498|            <td>Event download</td>
+   499|            <td><span class="pill pill-3g">3G</span></td>
+   500|            <td>TS 102 223 / TS 31.111 event download</td>
+   501|
